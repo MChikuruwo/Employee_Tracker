@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+  <persistence-unit name="default">
+
+      <class>com.employeetracker.EmployeeTrackerAPI.models.Activity</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.AnnualActivityCalendar</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.AuditTrail</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.BusinessUnit</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.DelegationOfDuty</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.Department</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.Employee</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.EmployeeStatus</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.JobTitle</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.Login</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.NextOfKin</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.Notices</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.Role</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.SpouseDetails</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.Task</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.TaskImportance</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.TaskRequestAction</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.TaskRequestStatus</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.TaskRequests</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.User</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.UserRole</class>
+      <class>com.employeetracker.EmployeeTrackerAPI.models.TaskStatus</class>
+      <properties>
+          <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/employee_tracker"/>
+          <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
+      </properties>
+  </persistence-unit>
+</persistence>
