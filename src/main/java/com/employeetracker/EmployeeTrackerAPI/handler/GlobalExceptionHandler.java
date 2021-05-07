@@ -86,6 +86,21 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UnknownManagerException.class)
+    public ApiResponse handleUnknownManagerException (UnknownManagerException e) {
+        return new ApiResponse(400, e.getLocalizedMessage());
+
+    }
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UnknownDutyException.class)
+    public ApiResponse handleUnknownDutyException (UnknownDutyException e) {
+        return new ApiResponse(400, e.getLocalizedMessage());
+
+    }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)

@@ -1,6 +1,6 @@
 package com.employeetracker.EmployeeTrackerAPI.models;
 
-import javax.persistence.*;
+/*import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -43,3 +43,5 @@ public class TaskStatus {
         return Objects.hash(id, status);
     }
 }
+
+ */

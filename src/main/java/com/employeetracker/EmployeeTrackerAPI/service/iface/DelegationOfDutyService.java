@@ -17,4 +17,6 @@ public interface DelegationOfDutyService {
     List<DelegationOfDuty> findAllByAssignedEmployee(Employee employee);
     List<DelegationOfDuty> findAllByAssigningManager(Employee manager);
     List<DelegationOfDuty> findAllByAssigningManagerAndAssignedEmployee(Employee manager, Employee employee);
+    List<DelegationOfDuty> findByIdAndEmployeeByAssignTo(Long id, Employee employee);
+
 }

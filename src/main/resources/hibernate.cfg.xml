@@ -4,8 +4,11 @@
     "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <property name="connection.url"/>
-    <property name="connection.driver_class"/>
+    <property name="connection.url">jdbc:mysql://localhost:3306/employee_tracker</property>
+    <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.DelegationOfDutyEntity"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.DelegationOfDutyTask"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskEntity"/>
     <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 

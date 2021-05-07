@@ -12,13 +12,14 @@ import java.util.Objects;
 @Entity
 @Table(name = "employee", schema = "employee_tracker")
 public class Employee {
-    private Long id;
+    private Integer id;
     private Integer userId;
     private String employeeCode;
     private String name;
     private String surname;
     private Gender gender;
     private String mobileNumber;
+    private String emailAddress;
     private ResidentialStatus residentialStatus;
     private String address1;
     private Timestamp dateCreated;
@@ -29,11 +30,11 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -95,6 +96,16 @@ public class Employee {
 
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
+    }
+
+    @Basic
+    @Column(name = "email_address")
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     @Basic

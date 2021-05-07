@@ -1,10 +1,13 @@
 package com.employeetracker.EmployeeTrackerAPI.models;
 
+import com.employeetracker.EmployeeTrackerAPI.enums.TaskStatus;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "task", schema = "employee_tracker")
@@ -12,13 +15,18 @@ public class Task {
     private Long id;
     private String name;
     private String description;
-    private Timestamp startTime;
-    private Timestamp endTime;
+    private Date startDate;
+    private Date dueDate;
+    private Date actualStartDate;
+    private Date actualEndDate;
+    private String reasonSOfMissingDueDate;
     private Timestamp dateUpdated;
     private Employee assignedTo;
-    private TaskImportance taskImportanceByActivityImportance;
-    private TaskStatus taskStatusByActivityStatus;
-    private TaskRequests taskRequestsByActivityRequests;
+    private TaskImportance importance;
+    private TaskStatus taskStatus;
+
+    private Set<DelegationOfDuty> delegatedDuty;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,23 +60,64 @@ public class Task {
     }
 
     @Basic
-    @Column(name = "start_time")
-    public Timestamp getStartTime() {
-        return startTime;
+    @Column(name = "start_date")
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setStartTime(Timestamp startTime) {
-        this.startTime = startTime;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
     @Basic
-    @Column(name = "end_time")
-    public Timestamp getEndTime() {
-        return endTime;
+    @Column(name = "due_date")
+    public Date getDueDate() {
+        return dueDate;
     }
 
-    public void setEndTime(Timestamp endTime) {
-        this.endTime = endTime;
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    @Basic
+    @Column(name = "actual_start_date")
+    public Date getActualStartDate() {
+        return actualStartDate;
+    }
+
+    public void setActualStartDate(Date actualStartDate) {
+        this.actualStartDate = actualStartDate;
+    }
+
+    @Basic
+    @Column(name = "actual_end_date")
+    public Date getActualEndDate() {
+        return actualEndDate;
+    }
+
+    public void setActualEndDate(Date actualEndDate) {
+        this.actualEndDate = actualEndDate;
+    }
+
+    @Basic
+    @Column(name = "reason(s)_of_missing_due_date")
+    public String getReasonSOfMissingDueDate() {
+        return reasonSOfMissingDueDate;
+    }
+
+    public void setReasonSOfMissingDueDate(String reasonSOfMissingDueDate) {
+        this.reasonSOfMissingDueDate = reasonSOfMissingDueDate;
+    }
+
+
+    @Basic
+    @Column(name = "task_status")
+    public TaskStatus getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     @Basic
@@ -82,17 +131,22 @@ public class Task {
         this.dateUpdated = dateUpdated;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task that = (Task) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(startTime, that.startTime) && Objects.equals(endTime, that.endTime) && Objects.equals(dateUpdated, that.dateUpdated);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description)  && Objects.equals(dateUpdated, that.dateUpdated);
+    }
+
+    public Task() {
+        super();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, startTime, endTime, dateUpdated);
+        return super.hashCode();
     }
 
     @ManyToOne
@@ -107,31 +161,34 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "task_importance", referencedColumnName = "id", nullable = false)
-    public TaskImportance getTaskImportanceByActivityImportance() {
-        return taskImportanceByActivityImportance;
+    public TaskImportance getImportance() {
+        return importance;
     }
 
-    public void setTaskImportanceByActivityImportance(TaskImportance taskImportanceByActivityImportance) {
-        this.taskImportanceByActivityImportance = taskImportanceByActivityImportance;
+    public void setImportance(TaskImportance taskImportanceByActivityImportance) {
+        this.importance = taskImportanceByActivityImportance;
     }
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "task_status", referencedColumnName = "id", nullable = false)
-    public TaskStatus getTaskStatusByActivityStatus() {
-        return taskStatusByActivityStatus;
+    public TaskStatus getTaskStatus() {
+        return taskStatus;
     }
 
-    public void setTaskStatusByActivityStatus(TaskStatus taskStatusByActivityStatus) {
-        this.taskStatusByActivityStatus = taskStatusByActivityStatus;
+    public void setTaskStatus(TaskStatus taskStatusByActivityStatus) {
+        this.taskStatus = taskStatusByActivityStatus;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "task_requests", referencedColumnName = "id", nullable = false)
-    public TaskRequests getTaskRequestsByActivityRequests() {
-        return taskRequestsByActivityRequests;
+     */
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "delegation_of_duty_task", joinColumns = @JoinColumn(name = "delegation_of_duty_id"), inverseJoinColumns = @JoinColumn(name = "task_id"))
+    public Set<DelegationOfDuty> getDelegatedDuty() {
+        return delegatedDuty;
     }
 
-    public void setTaskRequestsByActivityRequests(TaskRequests taskRequestsByActivityRequests) {
-        this.taskRequestsByActivityRequests = taskRequestsByActivityRequests;
+    public void setDelegatedDuty(Set<DelegationOfDuty> delegatedDuty) {
+        this.delegatedDuty = delegatedDuty;
     }
 }

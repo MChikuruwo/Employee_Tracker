@@ -47,13 +47,13 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Get an employee by their id. Takes id as a path variable", response = ApiResponse.class)
-    public ApiResponse getEmployeeById(@PathVariable("id") Long id){
+    public ApiResponse getEmployeeById(@PathVariable("id") Integer id){
         return new ApiResponse(200, "SUCCESS", employeeService.getOne(id));
     }
 
     @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "Delete an employee by their id. Takes id as a path variable", response = ApiResponse.class)
-    public ApiResponse deleteEmployee(@PathVariable("id") Long id){
+    public ApiResponse deleteEmployee(@PathVariable("id") Integer id){
         return new ApiResponse(200, "SUCCESS", employeeService.delete(id));
     }
 

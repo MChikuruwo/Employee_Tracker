@@ -1,9 +1,11 @@
 package com.employeetracker.EmployeeTrackerAPI.service.impl;
 
 import com.employeetracker.EmployeeTrackerAPI.dao.DelegationOfDutyRepository;
+import com.employeetracker.EmployeeTrackerAPI.exceptions.UnknownManagerException;
 import com.employeetracker.EmployeeTrackerAPI.models.DelegationOfDuty;
 import com.employeetracker.EmployeeTrackerAPI.models.Employee;
 import com.employeetracker.EmployeeTrackerAPI.service.iface.DelegationOfDutyService;
+import com.employeetracker.EmployeeTrackerAPI.service.iface.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,14 +18,21 @@ import java.util.Optional;
 public class DelegationOfDutyServiceImpl  implements DelegationOfDutyService {
 
     private final DelegationOfDutyRepository delegationOfDutyRepository;
+    private final EmployeeService employeeService;
 
     @Autowired
-    public DelegationOfDutyServiceImpl(DelegationOfDutyRepository delegationOfDutyRepository) {
+    public DelegationOfDutyServiceImpl(DelegationOfDutyRepository delegationOfDutyRepository, EmployeeService employeeService) {
         this.delegationOfDutyRepository = delegationOfDutyRepository;
+        this.employeeService = employeeService;
     }
 
     @Override
     public String add(DelegationOfDuty delegationOfDuty) {
+        Employee findEmployee = employeeService.findByUserId(delegationOfDuty.getEmployeeByAssignedBy().getId());
+        if(findEmployee==null){
+            throw new UnknownManagerException("No such Manager Found!");
+        }else
+
         delegationOfDutyRepository.save(delegationOfDuty);
         return "Delegation of duty request has been submitted";
     }
@@ -34,6 +43,10 @@ public class DelegationOfDutyServiceImpl  implements DelegationOfDutyService {
         if (!detailsFromDatabase.isPresent()) throw new EntityNotFoundException("Delegation of duty  request does not exist");
         // Carry date created timestamp
         delegationOfDuty.setDateCreated(detailsFromDatabase.get().getDateCreated());
+        Employee findEmployee = employeeService.findByUserId(delegationOfDuty.getEmployeeByAssignedBy().getId());
+        if(findEmployee==null){
+            throw new UnknownManagerException("No such Manager Found!");
+        }else
         delegationOfDutyRepository.save(delegationOfDuty);
         return "Delegation of duty  request with ID " + delegationOfDuty.getId() + " has been updated";    }
 
@@ -69,13 +82,14 @@ public class DelegationOfDutyServiceImpl  implements DelegationOfDutyService {
             throw new EntityNotFoundException("Delegation of  duty requests to employee: " .concat(employee.getName().concat(employee.getSurname())).concat("with Title:")
                     .concat(employee.getJobTitle().getTitleName()).concat(" not found"));
         }
+
         return delegationOfDuties;    }
 
     @Override
     public List<DelegationOfDuty> findAllByAssigningManager(Employee manager) {
         List<DelegationOfDuty> delegationOfDuties = delegationOfDutyRepository.findAllByEmployeeByAssignedBy(manager);
         if (delegationOfDuties.isEmpty()){
-            throw new EntityNotFoundException("Delegation of duty  requests from "
+            throw new UnknownManagerException("Delegation of duty  requests from "
                     .concat(manager.getName()).concat(" ").concat(manager.getSurname()).concat(" not found"));
         }
         return delegationOfDuties;    }
@@ -89,4 +103,15 @@ public class DelegationOfDutyServiceImpl  implements DelegationOfDutyService {
                     .concat(employee.getName().concat(employee.getSurname())).concat(" not found"));
         }
         return delegationOfDuties;    }
+
+    @Override
+    public List<DelegationOfDuty> findByIdAndEmployeeByAssignTo(Long id, Employee employee) {
+        List<DelegationOfDuty> project = delegationOfDutyRepository.findByIdAndEmployeeByAssignTo(id,employee);
+        if(project.isEmpty()){
+            throw new EntityNotFoundException("Delegated task with id:"
+            .concat(id.toString()).concat(" to employee:")
+            .concat(employee.getName()).concat(employee.getSurname()).concat(" not found"));
+        }
+        return project;
+    }
 }

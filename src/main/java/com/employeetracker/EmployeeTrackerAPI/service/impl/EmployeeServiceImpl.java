@@ -2,6 +2,7 @@ package com.employeetracker.EmployeeTrackerAPI.service.impl;
 
 import com.employeetracker.EmployeeTrackerAPI.dao.EmployeeRepository;
 import com.employeetracker.EmployeeTrackerAPI.dao.RoleRepository;
+import com.employeetracker.EmployeeTrackerAPI.enums.Gender;
 import com.employeetracker.EmployeeTrackerAPI.exceptions.EmployeeAlreadyExistsException;
 import com.employeetracker.EmployeeTrackerAPI.models.*;
 import com.employeetracker.EmployeeTrackerAPI.service.iface.EmployeeService;
@@ -61,7 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
 
     @Transactional
     @Override
-    public String delete(Long id) {
+    public String delete(Integer id) {
         Optional<Employee> employeeToDelete = employeeRepository.findById(id);
         if (!employeeToDelete.isPresent()){
             throw new EntityNotFoundException("Employee with ID " + id + " does not exist");
@@ -81,7 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
     }
 
     @Override
-    public Employee getOne(Long id) {
+    public Employee getOne(Integer id) {
         Optional<Employee> employee = employeeRepository.findById(id);
         if (!employee.isPresent()){
             throw new EntityNotFoundException("Employee with the ID " + id + " does not exist");

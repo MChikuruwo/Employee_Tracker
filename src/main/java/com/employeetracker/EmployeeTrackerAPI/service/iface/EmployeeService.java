@@ -11,9 +11,9 @@ import java.util.List;
 public interface EmployeeService {
     String add(Employee employee);
     String update(Employee employee);
-    String delete(Long id);
+    String delete(Integer id);
     List<Employee> getAll();
-    Employee getOne(Long id);
+    Employee getOne(Integer id);
     User empCodeAuth(String employeeCode, String password) throws Exception;
 
     Employee findByUserId(Integer userId);
