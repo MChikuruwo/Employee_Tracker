@@ -15,8 +15,6 @@ public class AddEmployeeDto {
     private String emailAddress;
     private ResidentialStatus residentialStatus;
     private String address1;
-    private Double monthlySalary;
-    private String accountNumber;
 
 
 }

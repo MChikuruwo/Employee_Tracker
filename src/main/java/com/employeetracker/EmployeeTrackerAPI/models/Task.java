@@ -111,6 +111,7 @@ public class Task {
 
 
     @Basic
+    @Enumerated(EnumType.STRING)
     @Column(name = "task_status")
     public TaskStatus getTaskStatus() {
         return taskStatus;

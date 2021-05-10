@@ -8,12 +8,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "employee", schema = "employee_tracker")
 public class Employee {
     private Integer id;
-    private Integer userId;
     private String employeeCode;
     private String name;
     private String surname;
@@ -27,6 +27,8 @@ public class Employee {
     private EmployeeStatus employeeStatus;
     private JobTitle jobTitle;
 
+    private Set<User> user;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -38,15 +40,6 @@ public class Employee {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "user_id")
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 
     @Basic
     @Column(name = "employee_code")
@@ -79,6 +72,7 @@ public class Employee {
     }
 
     @Basic
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     public Gender getGender() {
         return gender;
@@ -109,6 +103,7 @@ public class Employee {
     }
 
     @Basic
+    @Enumerated(EnumType.STRING)
     @Column(name = "residential_status")
     public ResidentialStatus getResidentialStatus() {
         return residentialStatus;
@@ -155,12 +150,12 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee that = (Employee) o;
-        return Objects.equals(id, that.id) && Objects.equals(userId, that.userId) && Objects.equals(employeeCode, that.employeeCode) && Objects.equals(name, that.name) && Objects.equals(surname, that.surname) && Objects.equals(gender, that.gender) && Objects.equals(mobileNumber, that.mobileNumber) && Objects.equals(residentialStatus, that.residentialStatus) && Objects.equals(address1, that.address1) && Objects.equals(dateCreated, that.dateCreated) && Objects.equals(dateUpdated, that.dateUpdated);
+        return Objects.equals(id, that.id) && Objects.equals(employeeCode, that.employeeCode) && Objects.equals(name, that.name) && Objects.equals(surname, that.surname) && Objects.equals(gender, that.gender) && Objects.equals(mobileNumber, that.mobileNumber) && Objects.equals(residentialStatus, that.residentialStatus) && Objects.equals(address1, that.address1) && Objects.equals(dateCreated, that.dateCreated) && Objects.equals(dateUpdated, that.dateUpdated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, employeeCode, name, surname, gender, mobileNumber, residentialStatus, address1, dateCreated, dateUpdated);
+        return Objects.hash(id, employeeCode, name, surname, gender, mobileNumber, residentialStatus, address1, dateCreated, dateUpdated);
     }
 
     @ManyToOne
@@ -181,5 +176,15 @@ public class Employee {
 
     public void setJobTitle(JobTitle jobTitleByJobTitleId) {
         this.jobTitle = jobTitleByJobTitleId;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "employee_user", joinColumns = @JoinColumn(name = "employee_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    public Set<User> getUser() {
+        return user;
+    }
+
+    public void setUser(Set<User> users) {
+        this.user = users;
     }
 }

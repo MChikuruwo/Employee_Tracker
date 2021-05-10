@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+
+import static java.util.Collections.singleton;
 
 
 @RestController
@@ -103,7 +106,7 @@ public class EmployeeController {
                                       @PathVariable("job-title-id") Long titleId){
 
         Employee employee = modelMapper.map(employeeDto, Employee.class);
-        employee.setUserId(userService.getOne(userId).getId());
+        employee.setUser(singleton(userService.getOne(userId)));
         employee.setEmployeeStatus(employeeStatusService.getOne(employeeStatusId));
         employee.setJobTitle(jobTitleService.getOne(titleId));
         //employee.setResidentialStatus(employeeService.);
@@ -112,21 +115,20 @@ public class EmployeeController {
         return new ApiResponse(200, "SUCCESS", employeeService.add(employee));
     }
 
-    @PutMapping("/edit/{employee-status-id}/{job-title-id}")
-    @ApiOperation(value = "Update an existing employee. Takes employeeStatusId and jobTitleId as path variables",
+    @PutMapping("/edit/{employee-id}")
+    @ApiOperation(value = "Update an existing employee. Takes employeeId as path variable",
             response = ApiResponse.class)
     public ApiResponse updateAnExistingEmployee(@RequestBody UpdateEmployeeDto employeeDto,
-                                                @PathVariable("employee-status-id") Long statusId,
-                                                @PathVariable("job-title-id") Long titleId){
+                                                @PathVariable("employee-id") Integer employeeId){
 
         Employee employee = modelMapper.map(employeeDto, Employee.class);
-        employee.setJobTitle(jobTitleService.getOne(titleId));
-        employee.setEmployeeStatus(employeeStatusService.getOne(statusId));
+        //employee.setJobTitle(jobTitleService.getOne(titleId));
+        //employee.setEmployeeStatus(employeeStatusService.getOne(statusId));
 
-        // Get old record to get the userId
-        Employee oldRecord = employeeService.getOne(employeeDto.getId());
+        // Update the old record
+        Employee oldRecord = employeeService.getOne(employeeId);
 
-        employee.setUserId(oldRecord.getUserId());
+        employee.setUser(oldRecord.getUser());
         return new ApiResponse(200, "SUCCESS", employeeService.update(employee));
     }
 }

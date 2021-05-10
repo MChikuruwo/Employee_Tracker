@@ -1,6 +1,8 @@
 package com.employeetracker.EmployeeTrackerAPI.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -41,6 +43,7 @@ public class DelegationOfDuty {
     }
 
     @Basic
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
     @Column(name = "from_date")
     public Date getFromDate() {
         return fromDate;
@@ -51,6 +54,7 @@ public class DelegationOfDuty {
     }
 
     @Basic
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
     @Column(name = "to_date")
     public Date getToDate() {
         return toDate;

@@ -74,11 +74,11 @@ public class DelegationOfDutyController {
         return new ApiResponse(200, "SUCCESS", delegationOfDutyService.delete(id));
     }
 
-    @PostMapping("/create/{manager-id}/{employee-id}")
-    @ApiOperation(value = "Create a new delegation of duty record. " + "Takes managerId and employeeId as path variables", response = ApiResponse.class)
+    @PostMapping("/create/{manager-id}/{subordinate-id}")
+    @ApiOperation(value = "Create a new delegation of duty record. " + "Takes managerId and subordinateId as path variables", response = ApiResponse.class)
     public ApiResponse createDelegationOfDuty(@RequestBody AddDelegationOfDutyDto delegationOfDutyDto,
                                            @PathVariable("manager-id") Integer managerId,
-                                           @PathVariable("employee-id") Integer employeeId){
+                                           @PathVariable("subordinate-id") Integer employeeId){
 
         DelegationOfDuty delegationOfDuty = modelMapper.map(delegationOfDutyDto, DelegationOfDuty.class);
         delegationOfDuty.setEmployeeByAssignedBy(employeeService.getOne(managerId));
@@ -88,8 +88,8 @@ public class DelegationOfDutyController {
         SimpleMailMessage delegationOfDutyEmail = new SimpleMailMessage();
         delegationOfDutyEmail.setTo(delegationOfDuty.getEmployeeByAssignTo().getEmailAddress());
         delegationOfDutyEmail.setSubject("Assigned Duty Alert");
-        delegationOfDutyEmail.setText(" Dear " + delegationOfDuty.getEmployeeByAssignTo().getName() + ", \n You have been assigned to duty:   " +delegationOfDuty.getDuty()
-                + " by  " + delegationOfDuty.getEmployeeByAssignedBy().getName() +"\n Please proceed to look into it and if there are any questions or gray areas kindly contact the email sender. ");
+        delegationOfDutyEmail.setText(" Dear " + delegationOfDuty.getEmployeeByAssignTo().getName().toUpperCase() +" " +delegationOfDuty.getEmployeeByAssignTo().getSurname().toUpperCase()  + ", \n You have been assigned to duty: " +delegationOfDuty.getDuty()
+                + "\n Description is as follows: " + delegationOfDuty.getReason() +"\n Duration is from date: " + delegationOfDuty.getFromDate() + " ,To date :"+delegationOfDuty.getToDate()+"\n Please proceed to look into it and if there are any questions or gray areas kindly escalate to the relevant parties.\n Regards\n" + delegationOfDuty.getEmployeeByAssignedBy().getName().toUpperCase() +" "+delegationOfDuty.getEmployeeByAssignTo().getSurname().toUpperCase());
         delegationOfDutyEmail.setFrom("nust.innovationhub@hotmail.com");
 
         emailService.sendEmail(delegationOfDutyEmail);

@@ -9,6 +9,9 @@
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.DelegationOfDutyEntity"/>
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.DelegationOfDutyTask"/>
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskEntity"/>
+      <mapping class="com.employeetracker.EmployeeTrackerAPI.models.EmployeeEntity"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.UserEntity"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.EmployeeUser"/>
     <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 

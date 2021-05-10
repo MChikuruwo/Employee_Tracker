@@ -53,7 +53,7 @@ public class NextOfKinController {
     @PostMapping("/add/{employee-id}")
     @ApiOperation(value = "Add an employee next of kin. Takes employeeId as a path variable", response = ApiResponse.class)
     public ApiResponse addNextOfKin(@RequestBody AddNextOfKinDto nextOfKinDto,
-                                    @PathVariable("employee-id") Long employeeId){
+                                    @PathVariable("employee-id") Integer employeeId){
         NextOfKin nextOfKin = modelMapper.map(nextOfKinDto, NextOfKin.class);
 
         Employee employee = employeeService.getOne(employeeId);
@@ -76,7 +76,7 @@ public class NextOfKinController {
 
     @GetMapping("/by-employee/{employee-id}")
     @ApiOperation(value = "Get a next of kin for a specific employee. Takes employeeId as a path variable", response = ApiResponse.class)
-    public ApiResponse findNextOfKinByEmployee(@PathVariable("employee-id") Long employeeId){
+    public ApiResponse findNextOfKinByEmployee(@PathVariable("employee-id") Integer employeeId){
         Employee employee = employeeService.getOne(employeeId);
         return new ApiResponse(200, "SUCCESS", nextOfKinService.findByEmployee(employee));
     }

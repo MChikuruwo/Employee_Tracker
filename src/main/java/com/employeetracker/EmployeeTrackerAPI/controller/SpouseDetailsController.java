@@ -46,7 +46,7 @@ public class SpouseDetailsController {
 
     @GetMapping("/by-employee/{employee-id}")
     @ApiOperation(value = "Get spouse details by employee. Takes employeeId as a path variable", response = ApiResponse.class)
-    public ApiResponse getSpouseDetailsByEmployee(@PathVariable("employee-id") Long employeeId){
+    public ApiResponse getSpouseDetailsByEmployee(@PathVariable("employee-id") Integer employeeId){
         Employee employee = employeeService.getOne(employeeId);
         return new ApiResponse(200, "SUCCESS", spouseDetailsService.findByEmployee(employee));
     }
@@ -60,7 +60,7 @@ public class SpouseDetailsController {
     @PostMapping("/add/{employee-id}")
     @ApiOperation(value = "Add new spouse details for an employee. Takes employeeId as a path variable", response = ApiResponse.class)
     public ApiResponse addSpouseDetails(@RequestBody AddSpouseDetailsDto spouseDetailsDto,
-                                        @PathVariable("employee-id") Long employeeId){
+                                        @PathVariable("employee-id") Integer employeeId){
 
         SpouseDetails spouseDetails = modelMapper.map(spouseDetailsDto, SpouseDetails.class);
         spouseDetails.setEmployeeByEmployeeId(employeeService.getOne(employeeId));

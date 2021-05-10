@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class UpdateEmployeeDto {
     private Integer id;
-    private Long userId;
     private String employeeCode;
     private String name;
     private String surname;
@@ -17,7 +16,5 @@ public class UpdateEmployeeDto {
     private String emailAddress;
     private ResidentialStatus residentialStatus;
     private String address1;
-    private Double monthlySalary;
-    private String accountNumber;
 
 }

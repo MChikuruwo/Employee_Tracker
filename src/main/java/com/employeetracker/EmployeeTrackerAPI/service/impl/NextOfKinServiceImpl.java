@@ -26,7 +26,7 @@ public class NextOfKinServiceImpl implements NextOfKinService {
     @Override
     public String add(NextOfKin nextOfKin) {
         nextOfKinRepository.save(nextOfKin);
-        return "Employee Next of kin has been added";
+        return "Employee Next of Kin has been successfully added.";
     }
 
     @Transactional

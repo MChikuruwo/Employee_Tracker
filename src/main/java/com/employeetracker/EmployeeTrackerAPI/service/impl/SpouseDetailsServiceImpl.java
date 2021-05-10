@@ -27,7 +27,7 @@ public class SpouseDetailsServiceImpl implements SpouseDetailsService {
     @Override
     public String add(SpouseDetails spouseDetails) {
         spouseDetailsRepository.save(spouseDetails);
-        return "Employee spouse details have been added to system";
+        return "Employee spouse details have been successfully added.";
     }
 
     @Override
