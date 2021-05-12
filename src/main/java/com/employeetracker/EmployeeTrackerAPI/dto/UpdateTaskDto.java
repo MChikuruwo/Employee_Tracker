@@ -1,5 +1,6 @@
 package com.employeetracker.EmployeeTrackerAPI.dto;
 
+import com.employeetracker.EmployeeTrackerAPI.enums.TaskStatus;
 import lombok.Data;
 
 import java.sql.Date;
@@ -14,4 +15,6 @@ public class UpdateTaskDto {
     private Date actualStartDate;
     private Date actualEndDate;
     private String reasonSOfMissingDueDate;
+    private TaskStatus taskStatus;
+
 }

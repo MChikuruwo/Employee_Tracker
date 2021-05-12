@@ -90,28 +90,41 @@ public class DelegationOfDutyController {
         delegationOfDutyEmail.setSubject("Assigned Duty Alert");
         delegationOfDutyEmail.setText(" Dear " + delegationOfDuty.getEmployeeByAssignTo().getName().toUpperCase() +" " +delegationOfDuty.getEmployeeByAssignTo().getSurname().toUpperCase()  + ", \n You have been assigned to duty: " +delegationOfDuty.getDuty()
                 + "\n Description is as follows: " + delegationOfDuty.getReason() +"\n Duration is from date: " + delegationOfDuty.getFromDate() + " ,To date :"+delegationOfDuty.getToDate()+"\n Please proceed to look into it and if there are any questions or gray areas kindly escalate to the relevant parties.\n Regards\n" + delegationOfDuty.getEmployeeByAssignedBy().getName().toUpperCase() +" "+delegationOfDuty.getEmployeeByAssignTo().getSurname().toUpperCase());
-        delegationOfDutyEmail.setFrom("nust.innovationhub@hotmail.com");
+        delegationOfDutyEmail.setFrom("mchikuruwo@hotmail.com");
 
         emailService.sendEmail(delegationOfDutyEmail);
 
         return new ApiResponse(201, "SUCCESS", delegationOfDutyService.add(delegationOfDuty));
     }
 
-    @PutMapping("/edit/{assigning-manager-id}/{assigned-employee-id}")
-    @ApiOperation(value = "Edit an existing delegation of duty  record. " +  "Takes assigningManagerId and employeeId as path variables",  response = ApiResponse.class)
+    @PutMapping("/edit/{duty-id}/{assigning-manager-id}/{assigned-employee-id}")
+    @ApiOperation(value = "Edit an existing delegation of duty  record. " +  "Takes dutyID,assigningManagerId and employeeId as path variables",  response = ApiResponse.class)
     public ApiResponse updateDelegationOfDuty(@RequestBody UpdateDelegationOfDutyDto delegationOfDutyDto,
-                                           @PathVariable("assigning-manager-id") Integer managerId,
+                                              @PathVariable("duty-id") Long dutyId,
+                                              @PathVariable("assigning-manager-id") Integer managerId,
                                            @PathVariable("assigned-employee-id") Integer employeeId){
 
         DelegationOfDuty delegationOfDuty = modelMapper.map(delegationOfDutyDto, DelegationOfDuty.class);
+        //delegationOfDuty.setId(delegationOfDutyService.getOne(dutyId));
         delegationOfDuty.setEmployeeByAssignedBy(employeeService.getOne(managerId));
         delegationOfDuty.setEmployeeByAssignTo(employeeService.getOne(employeeId));
 
         // Get details from old record
-        DelegationOfDuty oldRecord = delegationOfDutyService.getOne(delegationOfDuty.getId());
+        DelegationOfDuty oldRecord = delegationOfDutyService.getOne(dutyId);
 
         delegationOfDuty.setEmployeeByAssignedBy(oldRecord.getEmployeeByAssignedBy());
         delegationOfDuty.setEmployeeByAssignTo(oldRecord.getEmployeeByAssignTo());
+
+        //send update delegation of duty email from manager to subordinate on confirmation, could even be over sms
+        SimpleMailMessage updateDelegationOfDutyEmail = new SimpleMailMessage();
+        updateDelegationOfDutyEmail.setTo(delegationOfDuty.getEmployeeByAssignTo().getEmailAddress());
+        updateDelegationOfDutyEmail.setSubject("Assigned Duty Update Alert");
+        updateDelegationOfDutyEmail.setText(" Dear " + delegationOfDuty.getEmployeeByAssignTo().getName().toUpperCase() +" " +delegationOfDuty.getEmployeeByAssignTo().getSurname().toUpperCase()  + ", \n You have been assigned to duty: " +delegationOfDuty.getDuty()
+                + "\n Description is as follows: " + delegationOfDuty.getReason() +"\n Duration is from date: " + delegationOfDuty.getFromDate() + " ,To date :"+delegationOfDuty.getToDate()+"\n Please proceed to look into it and if there are any questions or gray areas kindly escalate to the relevant parties.\n Regards\n" + delegationOfDuty.getEmployeeByAssignedBy().getName().toUpperCase() +" "+delegationOfDuty.getEmployeeByAssignTo().getSurname().toUpperCase());
+        updateDelegationOfDutyEmail.setFrom("nust.innovationhub@hotmail.com");
+
+        emailService.sendEmail(updateDelegationOfDutyEmail);
+
         return new ApiResponse(200, "SUCCESS", delegationOfDutyService.update(delegationOfDuty));
     }
 }

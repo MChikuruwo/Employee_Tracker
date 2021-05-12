@@ -12,7 +12,9 @@
       <mapping class="com.employeetracker.EmployeeTrackerAPI.models.EmployeeEntity"/>
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.UserEntity"/>
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.EmployeeUser"/>
-    <!-- <property name="connection.username"/> -->
+      <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskEmployee"/>
+      <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskDelegationOfDuty"/>
+      <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 
     <!-- DB schema will be updated if needed -->

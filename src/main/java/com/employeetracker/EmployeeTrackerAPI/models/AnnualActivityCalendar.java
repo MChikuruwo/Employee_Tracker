@@ -1,5 +1,6 @@
 package com.employeetracker.EmployeeTrackerAPI.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -39,6 +40,7 @@ public class AnnualActivityCalendar {
     }
 
     @Basic
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
     @Column(name = "activity_day")
     public Date getActivityDay() {
         return activityDay;

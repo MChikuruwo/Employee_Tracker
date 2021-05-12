@@ -1,6 +1,7 @@
 package com.employeetracker.EmployeeTrackerAPI.models;
 
 import com.employeetracker.EmployeeTrackerAPI.enums.TaskStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -21,11 +22,12 @@ public class Task {
     private Date actualEndDate;
     private String reasonSOfMissingDueDate;
     private Timestamp dateUpdated;
-    private Employee assignedTo;
     private TaskImportance importance;
     private TaskStatus taskStatus;
 
-    private Set<DelegationOfDuty> delegatedDuty;
+    private Set<Employee> assignedTo;
+
+    private DelegationOfDuty delegatedDuty;
 
 
     @Id
@@ -60,6 +62,7 @@ public class Task {
     }
 
     @Basic
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
     @Column(name = "start_date")
     public Date getStartDate() {
         return startDate;
@@ -70,6 +73,7 @@ public class Task {
     }
 
     @Basic
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
     @Column(name = "due_date")
     public Date getDueDate() {
         return dueDate;
@@ -80,6 +84,7 @@ public class Task {
     }
 
     @Basic
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
     @Column(name = "actual_start_date")
     public Date getActualStartDate() {
         return actualStartDate;
@@ -90,6 +95,7 @@ public class Task {
     }
 
     @Basic
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
     @Column(name = "actual_end_date")
     public Date getActualEndDate() {
         return actualEndDate;
@@ -100,7 +106,7 @@ public class Task {
     }
 
     @Basic
-    @Column(name = "reason(s)_of_missing_due_date")
+    @Column(name = "reason_of_missing_due_date")
     public String getReasonSOfMissingDueDate() {
         return reasonSOfMissingDueDate;
     }
@@ -150,14 +156,14 @@ public class Task {
         return super.hashCode();
     }
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
-    public Employee getAssignedTo() {
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "task_employee", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
+    public Set<Employee> getAssignedTo() {
         return assignedTo;
     }
 
-    public void setAssignedTo(Employee employeeByEmployeeId) {
-        this.assignedTo = employeeByEmployeeId;
+    public void setAssignedTo(Set<Employee> assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
     @ManyToOne
@@ -183,13 +189,13 @@ public class Task {
      */
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "delegation_of_duty_task", joinColumns = @JoinColumn(name = "delegation_of_duty_id"), inverseJoinColumns = @JoinColumn(name = "task_id"))
-    public Set<DelegationOfDuty> getDelegatedDuty() {
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "task_delegation_of_duty", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "delegation_of_duty_id"))
+    public DelegationOfDuty getDelegatedDuty() {
         return delegatedDuty;
     }
 
-    public void setDelegatedDuty(Set<DelegationOfDuty> delegatedDuty) {
+    public void setDelegatedDuty(DelegationOfDuty delegatedDuty) {
         this.delegatedDuty = delegatedDuty;
     }
 }
