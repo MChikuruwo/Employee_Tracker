@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+
 
 @RestController
 @CrossOrigin
@@ -55,10 +57,8 @@ public class NextOfKinController {
     public ApiResponse addNextOfKin(@RequestBody AddNextOfKinDto nextOfKinDto,
                                     @PathVariable("employee-id") Integer employeeId){
         NextOfKin nextOfKin = modelMapper.map(nextOfKinDto, NextOfKin.class);
+        nextOfKin.setEmployee(Collections.singleton(employeeService.getOne(employeeId)));
 
-        Employee employee = employeeService.getOne(employeeId);
-
-        nextOfKin.setEmployee(employee);
 
         return new ApiResponse(201, "SUCCESS", nextOfKinService.add(nextOfKin));
     }

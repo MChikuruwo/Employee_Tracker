@@ -189,7 +189,7 @@ public class Task {
      */
 
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "task_delegation_of_duty", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "delegation_of_duty_id"))
     public DelegationOfDuty getDelegatedDuty() {
         return delegatedDuty;

@@ -14,7 +14,11 @@
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.EmployeeUser"/>
       <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskEmployee"/>
       <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskDelegationOfDuty"/>
-      <!-- <property name="connection.username"/> -->
+      <mapping class="com.employeetracker.EmployeeTrackerAPI.models.NextOfKinEntity"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.NextOfKinEmployee"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.SpouseDetailsEntity"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.SpouseEmployee"/>
+    <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 
     <!-- DB schema will be updated if needed -->

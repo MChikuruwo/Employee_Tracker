@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+
 
 @RestController
 @CrossOrigin
@@ -63,7 +65,7 @@ public class SpouseDetailsController {
                                         @PathVariable("employee-id") Integer employeeId){
 
         SpouseDetails spouseDetails = modelMapper.map(spouseDetailsDto, SpouseDetails.class);
-        spouseDetails.setEmployeeByEmployeeId(employeeService.getOne(employeeId));
+        spouseDetails.setEmployeeByEmployeeId(Collections.singleton(employeeService.getOne(employeeId)));
         return new ApiResponse(201, "SUCCESS", spouseDetailsService.add(spouseDetails));
     }
 

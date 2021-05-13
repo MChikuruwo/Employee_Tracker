@@ -109,7 +109,12 @@ public class EmployeeController {
         employee.setUser(singleton(userService.getOne(userId)));
         employee.setEmployeeStatus(employeeStatusService.getOne(employeeStatusId));
         employee.setJobTitle(jobTitleService.getOne(titleId));
-        //employee.setResidentialStatus(employeeService.);
+
+        //retrieve user details to set to an employee
+        employee.setEmailAddress(userService.getOne(userId).getEmailAddress());
+        employee.setName(userService.getOne(userId).getName());
+        employee.setSurname(userService.getOne(userId).getSurname());
+        employee.setEmployeeCode(userService.getOne(userId).getEmployeeCode());
 
 
         return new ApiResponse(200, "SUCCESS", employeeService.add(employee));

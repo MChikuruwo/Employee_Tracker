@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "next_of_kin", schema = "employee_tracker")
@@ -18,7 +19,8 @@ public class NextOfKin {
     private String emailAddress;
     private Timestamp dateCreated;
     private Timestamp dateUpdated;
-    private Employee employee;
+
+    private Set<Employee> employee;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -116,13 +118,13 @@ public class NextOfKin {
         return Objects.hash(id,name, surname, address, mobileNumber, emailAddress, dateCreated, dateUpdated);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
-    public Employee getEmployee() {
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "next_of_kin_employee", joinColumns = @JoinColumn(name = "next_of_kin_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
+    public Set<Employee> getEmployee() {
         return employee;
     }
 
-    public void setEmployee(Employee employeeByEmployeeId) {
-        this.employee = employeeByEmployeeId;
+    public void setEmployee(Set<Employee> employee) {
+        this.employee = employee;
     }
 }
