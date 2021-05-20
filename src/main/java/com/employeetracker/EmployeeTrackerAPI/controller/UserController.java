@@ -58,6 +58,18 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
+    @GetMapping("/all")
+    @ApiOperation(value = "Get all users", response = ApiResponse.class)
+    public ApiResponse getAllUsers(){
+        return new ApiResponse(200, "SUCCESS", userService.getAll());
+    }
+
+    @GetMapping("/one/{id}")
+    @ApiOperation(value = "Get one user by their ID", response = ApiResponse.class)
+    public ApiResponse getOneUser(@PathVariable("id") Integer id) {
+        return new ApiResponse(200, "SUCCESS", userService.getOne(id));
+    }
+
     @PostMapping(value = "/signUp/{role-id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Sign up a user to the AEMAPS platform with role-id as path variable", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse signUpUser(@RequestBody AddUserDto addUserDto, @PathVariable("role-id") Integer roleId, HttpServletRequest request){
@@ -84,7 +96,7 @@ public class UserController {
         registrationEmail.setText(" Dear " + user.getName() + ", \n You have been registered as a  " + roleService.getOne(roleId).getName()
                 + " of the AEMAPS Platform.\n Email: " + user.getEmailAddress() +"\n Employee Code: "+user.getEmployeeCode() +"\n Password: " + password +
                 " \n Please keep your temporary password safe and reset it as soon as possible.");
-        registrationEmail.setFrom("nust.innovationhub@hotmail.com");
+        registrationEmail.setFrom("mchikuruwo@hotmail.com");
 
         emailService.sendEmail(registrationEmail);
 
@@ -187,7 +199,7 @@ public class UserController {
         generatedCredentialsEmail.setSubject("AEMAPS-Password Reset");
         generatedCredentialsEmail.setText(" Dear " + user.getName() + " Your new credentials are as follows: \n Email: " + user.getEmailAddress() +"\n Password: " + password +
                 ". \n Please keep your temporary password safe and reset it as soon as possible.");
-        generatedCredentialsEmail.setFrom("nust.innovationhub@hotmail.com");
+        generatedCredentialsEmail.setFrom("mchikuruwo@hotmail.com");
 
         emailService.sendEmail(generatedCredentialsEmail);
 
