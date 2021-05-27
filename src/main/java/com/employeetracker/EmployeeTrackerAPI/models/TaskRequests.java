@@ -1,20 +1,30 @@
 package com.employeetracker.EmployeeTrackerAPI.models;
 
+import com.employeetracker.EmployeeTrackerAPI.enums.TaskRequestAction;
+import com.employeetracker.EmployeeTrackerAPI.enums.TaskRequestStatus;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "task_requests", schema = "employee_tracker")
 public class TaskRequests {
     private Long id;
-    private Timestamp requestDate;
-    private Employee employeeByEmployeeId;
-    private Task task;
-    private TaskRequestAction taskRequestAction;
+    private String taskName;
+    private String description;
     private TaskRequestStatus taskRequestStatus;
+    private TaskRequestAction taskRequestAction;
+    private Date startDate;
+    private Date endDate;
+    private Timestamp dateUpdated;
+    private TaskImportance importance;
+
+    private Set<DelegationOfDuty> duty;
+    private  Set<Employee> subordinate;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,14 +38,74 @@ public class TaskRequests {
     }
 
     @Basic
-    @CreationTimestamp
-    @Column(name = "request_date")
-    public Timestamp getRequestDate() {
-        return requestDate;
+    @Column(name = "task_name")
+    public String getTaskName() {
+        return taskName;
     }
 
-    public void setRequestDate(Timestamp requestDate) {
-        this.requestDate = requestDate;
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    @Basic
+    @Column(name = "description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Basic
+    @Column(name = "task_request_status")
+    public TaskRequestStatus getTaskRequestStatus() {
+        return taskRequestStatus;
+    }
+
+    public void setTaskRequestStatus(TaskRequestStatus taskRequestStatus) {
+        this.taskRequestStatus = taskRequestStatus;
+    }
+
+    @Basic
+    @Column(name = "task_request_action")
+    public TaskRequestAction getTaskRequestAction() {
+        return taskRequestAction;
+    }
+
+    public void setTaskRequestAction(TaskRequestAction taskRequestAction) {
+        this.taskRequestAction = taskRequestAction;
+    }
+
+    @Basic
+    @Column(name = "start_date")
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    @Basic
+    @Column(name = "end_date")
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    @Basic
+    @CreationTimestamp
+    @Column(name = "date_updated")
+    public Timestamp getDateUpdated() {
+        return dateUpdated;
+    }
+
+    public void setDateUpdated(Timestamp dateUpdated) {
+        this.dateUpdated = dateUpdated;
     }
 
     @Override
@@ -43,51 +113,41 @@ public class TaskRequests {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskRequests that = (TaskRequests) o;
-        return Objects.equals(id, that.id) && Objects.equals(requestDate, that.requestDate);
+        return Objects.equals(id, that.id) && Objects.equals(taskName, that.taskName) && Objects.equals(description, that.description) && Objects.equals(taskRequestStatus, that.taskRequestStatus) && Objects.equals(taskRequestAction, that.taskRequestAction) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate) && Objects.equals(dateUpdated, that.dateUpdated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, requestDate);
+        return Objects.hash(id, taskName, description, taskRequestStatus, taskRequestAction, startDate, endDate, dateUpdated);
     }
 
     @ManyToOne
-    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
-    public Employee getEmployeeByEmployeeId() {
-        return employeeByEmployeeId;
+    @JoinColumn(name = "task_importance_id", referencedColumnName = "id", nullable = false)
+    public TaskImportance getImportance() {
+        return importance;
     }
 
-    public void setEmployeeByEmployeeId(Employee employeeByEmployeeId) {
-        this.employeeByEmployeeId = employeeByEmployeeId;
+    public void setImportance(TaskImportance importance) {
+        this.importance = importance;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "task", referencedColumnName = "id", nullable = false)
-    public Task getTask() {
-        return task;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "task_request_duty", joinColumns = @JoinColumn(name = "task_request_id"), inverseJoinColumns = @JoinColumn(name = "delegation_of_duty_id"))
+    public Set<DelegationOfDuty> getDuty() {
+        return duty;
     }
 
-    public void setTask(Task taskByActivity) {
-        this.task = taskByActivity;
+    public void setDuty(Set<DelegationOfDuty> duty) {
+        this.duty = duty;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "task_request_action", referencedColumnName = "id", nullable = false)
-    public TaskRequestAction getTaskRequestAction() {
-        return taskRequestAction;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "task_request_employee", joinColumns = @JoinColumn(name = "task_request_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
+    public Set<Employee> getSubordinate() {
+        return subordinate;
     }
 
-    public void setTaskRequestAction(TaskRequestAction taskRequestActionByActivityRequestAction) {
-        this.taskRequestAction = taskRequestActionByActivityRequestAction;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "task_request_status", referencedColumnName = "id", nullable = false)
-    public TaskRequestStatus getTaskRequestStatus() {
-        return taskRequestStatus;
-    }
-
-    public void setTaskRequestStatus(TaskRequestStatus taskRequestStatusByActivityRequestStatus) {
-        this.taskRequestStatus = taskRequestStatusByActivityRequestStatus;
+    public void setSubordinate(Set<Employee> subordinate) {
+        this.subordinate = subordinate;
     }
 }

@@ -56,12 +56,12 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public String update(Task task) {
         Optional<Task> detailsFromDatabase = taskRepository.findById(task.getId());
-        if (!detailsFromDatabase.isPresent()) throw new EntityNotFoundException("Delegation of duty  request does not exist");
+        if (!detailsFromDatabase.isPresent()) throw new EntityNotFoundException("Task does not exist");
         // Carry date created timestamp
         task.setDateUpdated(detailsFromDatabase.get().getDateUpdated());
         DelegationOfDuty findDuty = (DelegationOfDuty) task.getDelegatedDuty();
         if (findDuty == null) {
-            throw new UnknownDutyException("No such duty found.");
+            throw new UnknownDutyException("No such task found.");
         } else
             taskRepository.save(task);
         return "Task with ID " + task.getId() + " has been updated";    }
@@ -72,7 +72,7 @@ public class TaskServiceImpl implements TaskService {
         if (!detailsToDelete.isPresent()){
             throw new EntityNotFoundException("Task with ID " + id + " does not exist");
         }
-        delegationOfDutyRepository.deleteById(id);
+        taskRepository.deleteById(id);
         return "Task has been successfully deleted.";
     }
 
@@ -87,8 +87,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task findByName(String name) {
-        return null;
-    }
+        Task task = taskRepository.findByName(name);
+        if (task == null) {
+            throw new EntityNotFoundException("Task: " + name + " not found");
+        }
+        return task;
+        }
 
     @Override
     public List<Task> findAllByAssignedTo(Employee employee) {

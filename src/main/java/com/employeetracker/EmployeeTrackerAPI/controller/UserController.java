@@ -31,8 +31,8 @@ import java.util.Collections;
 import java.util.Random;
 
 @RestController
-@CrossOrigin
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
+@CrossOrigin(origins = "http://localhost:5109")
 @Api(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 

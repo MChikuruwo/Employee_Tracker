@@ -18,6 +18,9 @@
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.NextOfKinEmployee"/>
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.SpouseDetailsEntity"/>
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.SpouseEmployee"/>
+      <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskRequestDuty"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskRequestEmployee"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskRequests"/>
     <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 
