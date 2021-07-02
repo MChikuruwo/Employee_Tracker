@@ -103,6 +103,14 @@ public class GlobalExceptionHandler {
 
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BusinessValidationException.class)
+    public ApiResponse handleBusinessValidationException (BusinessValidationException e) {
+        return new ApiResponse(400, e.getLocalizedMessage());
+
+    }
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
     public ApiResponse handleGeneralException(Exception e) {
         return new ApiResponse(400, e.getLocalizedMessage());

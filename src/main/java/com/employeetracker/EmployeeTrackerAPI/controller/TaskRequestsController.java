@@ -4,6 +4,8 @@ import com.employeetracker.EmployeeTrackerAPI.api.config.ApiResponse;
 import com.employeetracker.EmployeeTrackerAPI.dto.AddTaskRequestDto;
 import com.employeetracker.EmployeeTrackerAPI.dto.UpdateTaskDto;
 import com.employeetracker.EmployeeTrackerAPI.dto.UpdateTaskRequestDto;
+import com.employeetracker.EmployeeTrackerAPI.enums.TaskProgress;
+import com.employeetracker.EmployeeTrackerAPI.enums.TaskRequestAction;
 import com.employeetracker.EmployeeTrackerAPI.enums.TaskRequestStatus;
 import com.employeetracker.EmployeeTrackerAPI.enums.TaskStatus;
 import com.employeetracker.EmployeeTrackerAPI.models.Employee;
@@ -89,7 +91,10 @@ public class TaskRequestsController {
         emailService.sendEmail(taskRequestEmail);
 
         //set task task status to ACTIVE once it's been processed
-        task.setTaskRequestStatus(TaskRequestStatus.PENDING);
+        task.setTaskRequestStatus(TaskRequestStatus.PENDING); //DEFAULT
+        task.setTaskRequestAction(TaskRequestAction.ADD); //DEFAULT
+        task.setTaskStatus(TaskStatus.PENDING); //DEFAULT
+        task.setTaskProgress(TaskProgress.INITIAL); //DEFAULT
 
         return new ApiResponse(201, "SUCCESS", taskRequestsService.add(task));
     }
@@ -120,6 +125,116 @@ public class TaskRequestsController {
         taskRequestUpdateEmail.setFrom("mchikuruwo@hotmail.com");
 
         return new ApiResponse(200, "SUCCESS", taskRequestsService.update(task));
+    }
+    
+    @PutMapping("/validate/{task-id}/{duty-id}")
+    @ApiOperation(value="Approval of a task request. " + "Takes taskRequestId and dutyId as path variables", response = ApiResponse.class)
+    public ApiResponse approveTaskRequest( @PathVariable("task-id") Long taskId,
+                                           @PathVariable("duty-id") Long dutyId){
+
+        TaskRequests task = taskRequestsService.getOne(taskId);
+        task.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+
+        //send task request validation email, could even be over sms
+        SimpleMailMessage taskValidationEmail = new SimpleMailMessage();
+        taskValidationEmail.setTo(delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getEmailAddress());
+        taskValidationEmail.setSubject("Task Request Approval Alert");
+        taskValidationEmail.setText(" Dear " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase()+ " " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getSurname().toUpperCase() + ",\n Task Request: " + task.getTaskName() +" to duty: " + delegationOfDutyService.getOne(dutyId).getDuty()
+                + " requested to  " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase() +" " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getSurname().toUpperCase()  +" , with description: "+ task.getDescription()+ "\n Duration from start date: "+task.getStartDate()+","+" to finish date: "+ task.getEndDate()+"."+ " has been " + task.getTaskRequestStatus() +
+                "\nKindly look into it and if there is any more information on the approved task kindly contact "+ delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase() +" at: " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getEmailAddress().toString()+"\n Regards");
+        taskValidationEmail.setFrom("mchikuruwo@hotmail.com");
+
+        task.setTaskStatus(TaskStatus.ACTIVE);
+        task.setTaskProgress(TaskProgress.PARTIAL);
+
+        return new ApiResponse(200,"SUCCESS", taskRequestsService.approveTaskRequest(taskId, dutyId));
+    }
+
+    @PutMapping("/reject/{task-id}/{duty-id}")
+    @ApiOperation(value="Rejection of a task request. " + "Takes taskRequestId and dutyId as path variables ", response = ApiResponse.class)
+    public ApiResponse rejectTaskRequest(@PathVariable("task-id") Long taskId,
+                                         @PathVariable("duty-id") Long dutyId){
+
+        TaskRequests taskRequest = taskRequestsService.getOne(taskId);
+        taskRequest.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+
+        //send task request rejection email, could even be over sms
+        SimpleMailMessage taskRejectionEmail = new SimpleMailMessage();
+        taskRejectionEmail.setTo(delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getEmailAddress());
+        taskRejectionEmail.setSubject("Task Request Rejection Alert");
+        taskRejectionEmail.setText(" Dear " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase()+ " " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getSurname().toUpperCase() + ",\n Task Request: " + taskRequest.getTaskName() +" to duty: " + delegationOfDutyService.getOne(dutyId).getDuty()
+                + " requested to  " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase() +" " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getSurname().toUpperCase()  +" , with description: "+ taskRequest.getDescription()+ "\n Duration from start date: "+taskRequest.getStartDate()+","+" to finish date: "+ taskRequest.getEndDate()+"."+ " has been " + taskRequest.getTaskRequestStatus() +
+                "\nKindly look into it and if there are any questions kindly contact  "+ delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase() +" at: " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getEmailAddress().toString()+"\n Regards");
+        taskRejectionEmail.setFrom("mchikuruwo@hotmail.com");
+
+        taskRequest.setTaskStatus(TaskStatus.PENDING);
+        taskRequest.setTaskProgress(TaskProgress.INITIAL); //DEFAULT
+
+
+        return new ApiResponse(200,"SUCCESS", taskRequestsService.rejectTaskRequest(taskId,dutyId));
+    }
+
+    @PutMapping("/complete/{task-id}/{duty-id}")
+    @ApiOperation(value="Completion of a requested task . " + "Takes taskRequestId and dutyId as path variables ", response = ApiResponse.class)
+    public ApiResponse completionOfTaskRequest(@PathVariable("task-id") Long taskId,
+                                         @PathVariable("duty-id") Long dutyId){
+
+        TaskRequests taskRequest = taskRequestsService.getOne(taskId);
+        taskRequest.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+
+        //send task request rejection email, could even be over sms
+        SimpleMailMessage taskCompletionEmail = new SimpleMailMessage();
+        taskCompletionEmail.setTo(delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getEmailAddress());
+        taskCompletionEmail.setSubject("Task Request Rejection Alert");
+        taskCompletionEmail.setText(" Dear " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase()+ " " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getSurname().toUpperCase() + ",\n Task Request: " + taskRequest.getTaskName() +" to duty: " + delegationOfDutyService.getOne(dutyId).getDuty()
+                + " assigned to  " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase() +" " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getSurname().toUpperCase()  +" , with description: "+ taskRequest.getDescription()+ "\n Duration from start date: "+taskRequest.getStartDate()+","+" to finish date: "+ taskRequest.getEndDate()+"."+ " has been " + taskRequest.getTaskProgress() +
+                "\nKindly look into it for reviews and if there any gray areas or questions contact  "+ delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase() +" at: " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getEmailAddress().toString()+"\n Regards");
+        taskCompletionEmail.setFrom("mchikuruwo@hotmail.com");
+
+
+
+        return new ApiResponse(200,"SUCCESS", taskRequestsService.rejectTaskRequest(taskId,dutyId));
+    }
+
+    @PutMapping("/verify-completion/{task-id}/{duty-id}")
+    @ApiOperation(value="Completion verification of a task request. " + "Takes taskRequestId and dutyId as path variables ", response = ApiResponse.class)
+    public ApiResponse completionVerification(@PathVariable("task-id") Long taskId,
+                                         @PathVariable("duty-id") Long dutyId){
+
+        TaskRequests taskRequest = taskRequestsService.getOne(taskId);
+        taskRequest.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+
+        //send task request rejection email, could even be over sms
+        SimpleMailMessage taskCompletionVerificationEmail = new SimpleMailMessage();
+        taskCompletionVerificationEmail.setTo(delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getEmailAddress());
+        taskCompletionVerificationEmail.setSubject("Task Request Rejection Alert");
+        taskCompletionVerificationEmail.setText(" Dear " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase()+ " " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getSurname().toUpperCase() + ",\n Task Request: " + taskRequest.getTaskName() +" to duty: " + delegationOfDutyService.getOne(dutyId).getDuty()
+                + " assigned to  " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase() +" " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getSurname().toUpperCase()  +" , with description: "+ taskRequest.getDescription()+ "\n Duration from start date: "+taskRequest.getStartDate()+","+" to finish date: "+ taskRequest.getEndDate()+"."+ " completion has been APPROVED" +
+                "\nKindly look into it and if there are any more editions kindly contact  "+ delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase() +" at: " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getEmailAddress().toString()+"\n Regards");
+        taskCompletionVerificationEmail.setFrom("mchikuruwo@hotmail.com");
+
+
+        return new ApiResponse(200,"SUCCESS", taskRequestsService.rejectTaskRequest(taskId,dutyId));
+    }
+
+    @PutMapping("/reject/{task-id}/{duty-id}")
+    @ApiOperation(value="Rejection of a task request completion claim. " + "Takes taskRequestId and dutyId as path variables ", response = ApiResponse.class)
+    public ApiResponse rejectTaskRequestCompletion(@PathVariable("task-id") Long taskId,
+                                         @PathVariable("duty-id") Long dutyId){
+
+        TaskRequests taskRequest = taskRequestsService.getOne(taskId);
+        taskRequest.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+
+        //send task request rejection email, could even be over sms
+        SimpleMailMessage taskRejectionEmail = new SimpleMailMessage();
+        taskRejectionEmail.setTo(delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getEmailAddress());
+        taskRejectionEmail.setSubject("Task Request Completion Rejection Alert");
+        taskRejectionEmail.setText(" Dear " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase()+ " " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getSurname().toUpperCase() + ",\n Task Request: " + taskRequest.getTaskName() +" to duty: " + delegationOfDutyService.getOne(dutyId).getDuty()
+                + " approved by  " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase() +" " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getSurname().toUpperCase()  +" , with description: "+ taskRequest.getDescription()+ "\n Duration from start date: "+taskRequest.getStartDate()+","+" to finish date: "+ taskRequest.getEndDate()+"."+ "completion approval has been REJECTED"  +
+                "\nKindly look into it and if there are any questions kindly contact  "+ delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase() +" at: " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getEmailAddress().toString()+"\n Regards");
+        taskRejectionEmail.setFrom("mchikuruwo@hotmail.com");
+
+        return new ApiResponse(200,"SUCCESS", taskRequestsService.rejectTaskRequest(taskId,dutyId));
     }
 }
 

@@ -54,8 +54,7 @@ public class DelegationOfDutyController {
             response = ApiResponse.class)
     public ApiResponse getDelegationOfDutyByAssigningManager(@PathVariable("id") Integer managerId){
         Employee manager = employeeService.getOne(managerId);
-        return new ApiResponse(200, "SUCCESS",
-                delegationOfDutyService.findAllByAssigningManager(manager));
+        return new ApiResponse(200, "SUCCESS", delegationOfDutyService.findAllByAssigningManager(manager));
     }
 
     @GetMapping("/by-assigned-employee/{id}")
@@ -63,8 +62,7 @@ public class DelegationOfDutyController {
             response = ApiResponse.class)
     public ApiResponse getDelegationOfDutyByEmployee(@PathVariable("id") Integer employeeId){
         Employee employee = employeeService.getOne(employeeId);
-        return new ApiResponse(200, "SUCCESS",
-                delegationOfDutyService.findAllByAssignedEmployee(employee));
+        return new ApiResponse(200, "SUCCESS", delegationOfDutyService.findAllByAssignedEmployee(employee));
     }
 
     @DeleteMapping("/delete/{id}")

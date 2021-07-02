@@ -1,8 +1,11 @@
 package com.employeetracker.EmployeeTrackerAPI.service.impl;
 
 import com.employeetracker.EmployeeTrackerAPI.dao.TaskRequestRepository;
+import com.employeetracker.EmployeeTrackerAPI.enums.TaskProgress;
 import com.employeetracker.EmployeeTrackerAPI.enums.TaskRequestAction;
 import com.employeetracker.EmployeeTrackerAPI.enums.TaskRequestStatus;
+import com.employeetracker.EmployeeTrackerAPI.enums.TaskStatus;
+import com.employeetracker.EmployeeTrackerAPI.exceptions.BusinessValidationException;
 import com.employeetracker.EmployeeTrackerAPI.exceptions.UnknownDutyException;
 import com.employeetracker.EmployeeTrackerAPI.models.*;
 import com.employeetracker.EmployeeTrackerAPI.service.iface.DelegationOfDutyService;
@@ -105,6 +108,32 @@ public class TaskRequestsServiceImpl implements TaskRequestsService {
     }
 
     @Override
+    public TaskRequests approveTaskRequest(Long taskId, Long dutyId) {
+        TaskRequests taskRequests = taskRequestRepository.getOne(taskId);
+          delegationOfDutyService.getOne(dutyId);
+        if (taskRequests.getTaskRequestStatus() == TaskRequestStatus.PENDING) {
+            taskRequests.setTaskRequestStatus(TaskRequestStatus.APPROVED);
+            return taskRequestRepository.save(taskRequests);
+        } else {
+            //if task status is rejected, it cannot be approved
+            throw new BusinessValidationException("Task request with id: " + taskId + " state is " + taskRequests.getTaskRequestStatus() + "  and cannot be approved.");
+        }
+    }
+
+    @Override
+    public TaskRequests rejectTaskRequest(Long taskId, Long dutyId) {
+        TaskRequests taskRequest = taskRequestRepository.getOne(taskId);
+        delegationOfDutyService.getOne(dutyId);
+        if (taskRequest.getTaskRequestStatus() == TaskRequestStatus.PENDING) {
+            taskRequest.setTaskRequestStatus(TaskRequestStatus.REJECTED);
+            return taskRequestRepository.save(taskRequest);
+        } else {
+            //if task status is approved, it cannot be rejected
+            throw new BusinessValidationException("Task request with id: " + taskId + " state is " + taskRequest.getTaskRequestStatus() + "  and cannot be rejected.");
+        }
+    }
+
+    @Override
     public List<TaskRequests> findAllByDuty(DelegationOfDuty duty) {
         List<TaskRequests> tasks = taskRequestRepository.findAllByDuty(duty);
         if (tasks.isEmpty()) {
@@ -113,5 +142,45 @@ public class TaskRequestsServiceImpl implements TaskRequestsService {
         }
 
         return tasks;
+    }
+
+    @Override
+    public TaskRequests verifyTaskCompletion(Long taskId, Long dutyId) {
+        TaskRequests taskRequest = taskRequestRepository.getOne(taskId);
+        delegationOfDutyService.getOne(dutyId);
+        if (taskRequest.getTaskStatus() == TaskStatus.ACTIVE){
+            taskRequest.setTaskProgress(TaskProgress.DONE);
+            taskRequest.setTaskStatus(TaskStatus.COMPLETE);
+            return taskRequestRepository.save(taskRequest);
+        } else {
+            //if task status is complete, it cannot be pending
+            throw new BusinessValidationException("Task request with id: " + taskId + " state is " + taskRequest.getTaskStatus() + "  and cannot be pending.");
+        }
+    }
+
+    @Override
+    public TaskRequests completeTask(Long taskId, Long dutyId) {
+        TaskRequests taskRequest = taskRequestRepository.getOne(taskId);
+        delegationOfDutyService.getOne(dutyId);
+        if (taskRequest.getTaskProgress() == TaskProgress.PARTIAL){
+            taskRequest.setTaskProgress(TaskProgress.DONE);
+            return taskRequestRepository.save(taskRequest);
+        } else {
+            //if task status is complete, it cannot be pending
+            throw new BusinessValidationException("Task request with id: " + taskId + " progress is " + taskRequest.getTaskProgress() + "  and cannot be initial.");
+        }
+    }
+
+    @Override
+    public TaskRequests rejectTaskCompletion(Long taskId, Long dutyId) {
+        TaskRequests taskRequest = taskRequestRepository.getOne(taskId);
+        delegationOfDutyService.getOne(dutyId);
+        if (taskRequest.getTaskProgress() == TaskProgress.DONE){
+            taskRequest.setTaskProgress(TaskProgress.PARTIAL);
+            return taskRequestRepository.save(taskRequest);
+        } else {
+            //if task status is complete, it cannot be pending
+            throw new BusinessValidationException("Task request with id: " + taskId + " progress is " + taskRequest.getTaskProgress() + "  and cannot be done.");
+        }
     }
 }

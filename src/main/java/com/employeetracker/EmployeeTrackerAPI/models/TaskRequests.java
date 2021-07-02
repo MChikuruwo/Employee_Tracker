@@ -1,8 +1,12 @@
 package com.employeetracker.EmployeeTrackerAPI.models;
 
+import com.employeetracker.EmployeeTrackerAPI.enums.TaskProgress;
 import com.employeetracker.EmployeeTrackerAPI.enums.TaskRequestAction;
 import com.employeetracker.EmployeeTrackerAPI.enums.TaskRequestStatus;
+import com.employeetracker.EmployeeTrackerAPI.enums.TaskStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -18,6 +22,8 @@ public class TaskRequests {
     private String description;
     private TaskRequestStatus taskRequestStatus;
     private TaskRequestAction taskRequestAction;
+    private TaskStatus taskStatus;
+    private TaskProgress taskProgress;
     private Date startDate;
     private Date endDate;
     private Timestamp dateUpdated;
@@ -58,6 +64,7 @@ public class TaskRequests {
     }
 
     @Basic
+    @Enumerated(EnumType.STRING)
     @Column(name = "task_request_status")
     public TaskRequestStatus getTaskRequestStatus() {
         return taskRequestStatus;
@@ -68,6 +75,7 @@ public class TaskRequests {
     }
 
     @Basic
+    @Enumerated(EnumType.STRING)
     @Column(name = "task_request_action")
     public TaskRequestAction getTaskRequestAction() {
         return taskRequestAction;
@@ -78,6 +86,28 @@ public class TaskRequests {
     }
 
     @Basic
+    @Enumerated(EnumType.STRING)
+    @Column(name = "task_status")
+    public TaskStatus getTaskStatus() {
+        return taskStatus;
+    }
+    public void setTaskStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
+    @Basic
+    @Enumerated(EnumType.STRING)
+    @Column(name = "task_progress")
+    public TaskProgress getTaskProgress() {
+        return taskProgress;
+    }
+
+    public void setTaskProgress(TaskProgress taskProgress) {
+        this.taskProgress = taskProgress;
+    }
+
+    @Basic
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
     @Column(name = "start_date")
     public Date getStartDate() {
         return startDate;
@@ -88,6 +118,7 @@ public class TaskRequests {
     }
 
     @Basic
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
     @Column(name = "end_date")
     public Date getEndDate() {
         return endDate;
@@ -98,7 +129,7 @@ public class TaskRequests {
     }
 
     @Basic
-    @CreationTimestamp
+    @UpdateTimestamp
     @Column(name = "date_updated")
     public Timestamp getDateUpdated() {
         return dateUpdated;
