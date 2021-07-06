@@ -21,6 +21,9 @@
       <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskRequestDuty"/>
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskRequestEmployee"/>
     <mapping class="com.employeetracker.EmployeeTrackerAPI.models.TaskRequests"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.Location"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.LocationLogin"/>
+    <mapping class="com.employeetracker.EmployeeTrackerAPI.models.LoginEntity"/>
     <!-- <property name="connection.username"/> -->
     <!-- <property name="connection.password"/> -->
 

@@ -4,11 +4,15 @@ import com.employeetracker.EmployeeTrackerAPI.enums.Gender;
 import com.employeetracker.EmployeeTrackerAPI.enums.ResidentialStatus;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
+import javax.validation.constraints.Past;
+
 
 @Entity
 @Table(name = "employee", schema = "employee_tracker")
@@ -17,6 +21,7 @@ public class Employee {
     private String employeeCode;
     private String name;
     private String surname;
+    private LocalDate dateOfBirth;
     private Gender gender;
     private String mobileNumber;
     private String emailAddress;
@@ -80,6 +85,18 @@ public class Employee {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    @Basic
+    @Column(name = "date_of_birth")
+    @Past(message = "Date should be in the past")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     @Basic

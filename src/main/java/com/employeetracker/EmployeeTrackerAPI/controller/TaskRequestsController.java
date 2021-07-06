@@ -217,7 +217,7 @@ public class TaskRequestsController {
         return new ApiResponse(200,"SUCCESS", taskRequestsService.rejectTaskRequest(taskId,dutyId));
     }
 
-    @PutMapping("/reject/{task-id}/{duty-id}")
+    @PutMapping("/reject-completion/{task-id}/{duty-id}")
     @ApiOperation(value="Rejection of a task request completion claim. " + "Takes taskRequestId and dutyId as path variables ", response = ApiResponse.class)
     public ApiResponse rejectTaskRequestCompletion(@PathVariable("task-id") Long taskId,
                                          @PathVariable("duty-id") Long dutyId){
