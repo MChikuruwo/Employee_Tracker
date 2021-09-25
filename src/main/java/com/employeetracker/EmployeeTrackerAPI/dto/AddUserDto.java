@@ -8,6 +8,5 @@ public class AddUserDto {
     private String surname;
     private String emailAddress;
     private String employeeCode;
-    private Integer roleId;
 
 }

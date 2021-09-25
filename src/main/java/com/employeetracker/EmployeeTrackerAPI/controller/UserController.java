@@ -71,12 +71,13 @@ public class UserController {
         return new ApiResponse(200, "SUCCESS", userService.getOne(id));
     }
 
-    @PostMapping(value = "/signUp", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/signUp/{role-id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Sign up a user to the AEMAPS platform.", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse signUpUser(@RequestBody AddUserDto addUserDto,HttpServletRequest request){
+    public ApiResponse signUpUser(@RequestBody AddUserDto addUserDto,
+                                  @PathVariable ("role-id") Integer roleId, HttpServletRequest request){
         User user = modelMapper.map(addUserDto, User.class);
 
-        Role role = roleService.getOne(addUserDto.getRoleId());
+        Role role = roleService.getOne(roleId);
 
         // Assign the role of the user
         user.setRole(Collections.singleton(role));
