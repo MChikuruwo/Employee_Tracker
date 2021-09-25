@@ -97,41 +97,37 @@ public class EmployeeController {
         return new ApiResponse(200, "SUCCESS", employeeService.findAllByGender(gender));
     }
 
-    @PostMapping("/add/{user-id}/{employee-status-id}/{job-title-id}")
-    @ApiOperation(value = "Add a new employee. Takes userId, employeeStatusId and jobTitleId as path variables",
+    @PostMapping("/add")
+    @ApiOperation(value = "Add a new employee.",
             response = ApiResponse.class)
-    public ApiResponse addNewEmployee(@RequestBody AddEmployeeDto employeeDto,
-                                      @PathVariable("user-id") Integer userId,
-                                      @PathVariable("employee-status-id") Long employeeStatusId,
-                                      @PathVariable("job-title-id") Long titleId){
+    public ApiResponse addNewEmployee(@RequestBody AddEmployeeDto employeeDto){
 
         Employee employee = modelMapper.map(employeeDto, Employee.class);
-        employee.setUser(singleton(userService.getOne(userId)));
-        employee.setEmployeeStatus(employeeStatusService.getOne(employeeStatusId));
-        employee.setJobTitle(jobTitleService.getOne(titleId));
+        employee.setUser(singleton(userService.getOne(employeeDto.getUserId())));
+        employee.setEmployeeStatus(employeeStatusService.getOne(employeeDto.getEmployeeStatus()));
+        employee.setJobTitle(jobTitleService.getOne(employeeDto.getJobTitle()));
 
         //retrieve user details to set to an employee
-        employee.setEmailAddress(userService.getOne(userId).getEmailAddress());
-        employee.setName(userService.getOne(userId).getName());
-        employee.setSurname(userService.getOne(userId).getSurname());
-        employee.setEmployeeCode(userService.getOne(userId).getEmployeeCode());
+        employee.setEmailAddress(userService.getOne(employeeDto.getUserId()).getEmailAddress());
+        employee.setName(userService.getOne(employeeDto.getUserId()).getName());
+        employee.setSurname(userService.getOne(employeeDto.getUserId()).getSurname());
+        employee.setEmployeeCode(userService.getOne(employeeDto.getUserId()).getEmployeeCode());
 
 
         return new ApiResponse(200, "SUCCESS", employeeService.add(employee));
     }
 
-    @PutMapping("/edit/{employee-id}")
-    @ApiOperation(value = "Update an existing employee. Takes employeeId as path variable",
+    @PutMapping("/edit")
+    @ApiOperation(value = "Update an existing employee.",
             response = ApiResponse.class)
-    public ApiResponse updateAnExistingEmployee(@RequestBody UpdateEmployeeDto employeeDto,
-                                                @PathVariable("employee-id") Integer employeeId){
+    public ApiResponse updateAnExistingEmployee(@RequestBody UpdateEmployeeDto employeeDto){
 
         Employee employee = modelMapper.map(employeeDto, Employee.class);
         //employee.setJobTitle(jobTitleService.getOne(titleId));
         //employee.setEmployeeStatus(employeeStatusService.getOne(statusId));
 
         // Update the old record
-        Employee oldRecord = employeeService.getOne(employeeId);
+        Employee oldRecord = employeeService.getOne(employeeDto.getId());
 
         employee.setUser(oldRecord.getUser());
         return new ApiResponse(200, "SUCCESS", employeeService.update(employee));

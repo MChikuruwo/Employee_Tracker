@@ -52,12 +52,12 @@ public class NextOfKinController {
         return new ApiResponse(200, "SUCCESS", nextOfKinService.delete(id));
     }
 
-    @PostMapping("/add/{employee-id}")
+    @PostMapping("/add")
     @ApiOperation(value = "Add an employee next of kin. Takes employeeId as a path variable", response = ApiResponse.class)
-    public ApiResponse addNextOfKin(@RequestBody AddNextOfKinDto nextOfKinDto,
-                                    @PathVariable("employee-id") Integer employeeId){
+    public ApiResponse addNextOfKin(@RequestBody AddNextOfKinDto nextOfKinDto){
         NextOfKin nextOfKin = modelMapper.map(nextOfKinDto, NextOfKin.class);
-        nextOfKin.setEmployee(Collections.singleton(employeeService.getOne(employeeId)));
+
+        nextOfKin.setEmployee(Collections.singleton(employeeService.getOne(nextOfKinDto.getEmployeeId())));
 
 
         return new ApiResponse(201, "SUCCESS", nextOfKinService.add(nextOfKin));

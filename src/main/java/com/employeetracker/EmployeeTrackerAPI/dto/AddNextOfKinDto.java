@@ -9,4 +9,5 @@ public class AddNextOfKinDto {
     private String address;
     private String mobileNumber;
     private String emailAddress;
+    private Integer employeeId;
 }

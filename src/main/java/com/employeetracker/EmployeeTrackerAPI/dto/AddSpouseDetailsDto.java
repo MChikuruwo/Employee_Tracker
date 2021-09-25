@@ -11,6 +11,7 @@ public class AddSpouseDetailsDto {
     private String employerAddress;
     private String mobileNumber;
     private String emailAddress;
+    private Integer employeeId;
 
 
 }

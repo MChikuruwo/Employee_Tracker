@@ -54,16 +54,14 @@ public class JobTitleController {
         return new ApiResponse(200, "SUCCESS", jobTitleService.delete(id));
     }
 
-    @PostMapping("/add/{business-unit-id}/{department-id}")
-    @ApiOperation(value = "Add a new job title. Takes businessUnitId and departmentId as path variables",
+    @PostMapping("/add")
+    @ApiOperation(value = "Add a new job title.",
             response = ApiResponse.class)
-    public ApiResponse addJobTitle(@RequestBody AddJobTitleDto jobTitleDto,
-                                   @PathVariable("business-unit-id") Integer businessUnitId,
-                                   @PathVariable("department-id") Integer departmentId){
+    public ApiResponse addJobTitle(@RequestBody AddJobTitleDto jobTitleDto){
 
         JobTitle jobTitle = modelMapper.map(jobTitleDto, JobTitle.class);
-        jobTitle.setBusinessUnit(businessUnitService.getOne(businessUnitId));
-        jobTitle.setDepartment(departmentService.getOne(departmentId));
+        jobTitle.setBusinessUnit(businessUnitService.getOne(jobTitleDto.getBusinessUnitId()));
+        jobTitle.setDepartment(departmentService.getOne(jobTitleDto.getDepartmentId()));
 
         return new ApiResponse(200, "SUCCESS", jobTitleService.add(jobTitle));
     }

@@ -59,13 +59,12 @@ public class SpouseDetailsController {
         return new ApiResponse(200, "SUCCESS", spouseDetailsService.delete(id));
     }
 
-    @PostMapping("/add/{employee-id}")
-    @ApiOperation(value = "Add new spouse details for an employee. Takes employeeId as a path variable", response = ApiResponse.class)
-    public ApiResponse addSpouseDetails(@RequestBody AddSpouseDetailsDto spouseDetailsDto,
-                                        @PathVariable("employee-id") Integer employeeId){
+    @PostMapping("/add")
+    @ApiOperation(value = "Add new spouse details for an employee.", response = ApiResponse.class)
+    public ApiResponse addSpouseDetails(@RequestBody AddSpouseDetailsDto spouseDetailsDto){
 
         SpouseDetails spouseDetails = modelMapper.map(spouseDetailsDto, SpouseDetails.class);
-        spouseDetails.setEmployeeByEmployeeId(Collections.singleton(employeeService.getOne(employeeId)));
+        spouseDetails.setEmployeeByEmployeeId(Collections.singleton(employeeService.getOne(spouseDetailsDto.getEmployeeId())));
         return new ApiResponse(201, "SUCCESS", spouseDetailsService.add(spouseDetails));
     }
 

@@ -9,15 +9,18 @@ import java.time.LocalDate;
 
 @Data
 public class AddEmployeeDto {
-    private String employeeCode;
-    private String name;
-    private String surname;
+    //private String employeeCode;
+   // private String name;
+   // private String surname;
     private LocalDate dateOfBirth;
     private Gender gender;
     private String mobileNumber;
-    private String emailAddress;
+   // private String emailAddress;
     private ResidentialStatus residentialStatus;
     private String address1;
+    private Integer userId;
+    private Long employeeStatus;
+    private Long jobTitle;
 
 
 }
