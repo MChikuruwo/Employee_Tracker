@@ -72,13 +72,13 @@ public class LocationController {
         return new ApiResponse(200, "SUCCESS", locationService.update(location));
     }
 
-    @GetMapping("/by-longitude")
+    @GetMapping("/by-longitude/{longitude}")
     @ApiOperation(value = "Get a location by its longitude. Takes longitude as a request parameter",  response = ApiResponse.class)
     public ApiResponse getLocationByLongitude(@RequestParam("longitude") String longitude){
         return new ApiResponse(200, "SUCCESS", locationService.findByLongitude(longitude));
     }
 
-    @GetMapping("/by-latitude")
+    @GetMapping("/by-latitude/{latitude}")
     @ApiOperation(value = "Get a location by its latitude. Takes latitude as a request parameter",  response = ApiResponse.class)
     public ApiResponse getLocationByLatitude(@RequestParam("latitude") String latitude){
         return new ApiResponse(200, "SUCCESS", locationService.findByLongitude(latitude));

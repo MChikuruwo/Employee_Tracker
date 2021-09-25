@@ -21,7 +21,7 @@ public class User {
     private Timestamp dateCreated;
     private Timestamp dateUpdated;
 
-    private Set<Role> roles;
+    private Set<Role> role;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -131,11 +131,11 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    public Set<Role> getRoles() {
-        return roles;
+    public Set<Role> getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Set<Role> role) {
+        this.role = role;
     }
 }

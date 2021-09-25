@@ -164,7 +164,7 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
     @Override
     public UserDetails loadUserByUsername(String employeeCode) throws UsernameNotFoundException {
         User user = userService.findByEmployeeCode(employeeCode);
-        roleRepository.findByName(user.getRoles().toString());
+        roleRepository.findByName(user.getRole().toString());
         if (user == null){
             //TODO: Set an error that the user by that email address cannot be found
             throw new UsernameNotFoundException("Could not find the user " + employeeCode);

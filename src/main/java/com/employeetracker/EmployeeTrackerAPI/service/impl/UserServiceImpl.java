@@ -59,6 +59,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return "User with ID " + user.getId() + " has been updated";
     }
 
+    @Override
+    public String reset(User user) {
+        Optional<User> userFromDatabase = Optional.ofNullable(userRepository.findUserByEmailAddress(user.getEmailAddress()));
+        if (!userFromDatabase.isPresent()) throw new EmailNotFoundException("User Email does not exist!");
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        return "User credentials have been successfully reset, check email.";
+    }
+
     @Transactional
     @Override
     public String delete(Integer id) {
@@ -147,7 +156,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String emailAddress) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmailAddress(emailAddress);
-        roleRepository.findByName(user.getRoles().toString());
+        roleRepository.findByName(user.getRole().toString());
         Set<GrantedAuthority> grantedAuthorities = null;
         try {
             user = userRepository.findUserByEmailAddress(emailAddress);
@@ -155,7 +164,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 throw new UsernameNotFoundException("User with email:" + emailAddress + " not available.");
 
             grantedAuthorities = new HashSet<>();
-            for (Role role : user.getRoles()) {
+            for (Role role : user.getRole()) {
                 String roleName = "ROLE_" + role.getName();
                 GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(roleName);
                 grantedAuthorities.add(grantedAuthority);

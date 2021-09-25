@@ -46,9 +46,10 @@ public class BusinessUnitController {
         return new ApiResponse(200, "SUCCESS", businessUnitService.delete(id));
     }
 
-    @PostMapping("/by-name")
+    @GetMapping("/by-name/{name}")
     @ApiOperation(value = "Get a business unit by its name.", response = ApiResponse.class)
-    public ApiResponse getBusinessUnitByName(@RequestBody AddBusinessUnitDto businessUnit){
+    public ApiResponse getBusinessUnitByName(@RequestBody AddBusinessUnitDto businessUnit,
+                                                @PathVariable String name){
         return new ApiResponse(200, "SUCCESS", businessUnitService.findByBusinessUnit(businessUnit.getBusinessUnit()));
     }
 

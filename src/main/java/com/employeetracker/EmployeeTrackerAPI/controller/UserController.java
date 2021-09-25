@@ -6,6 +6,7 @@ import com.employeetracker.EmployeeTrackerAPI.dto.GenerateCredentialsDto;
 import com.employeetracker.EmployeeTrackerAPI.dto.LoginDto;
 import com.employeetracker.EmployeeTrackerAPI.dto.UpdateUserDto;
 import com.employeetracker.EmployeeTrackerAPI.models.Login;
+import com.employeetracker.EmployeeTrackerAPI.models.Role;
 import com.employeetracker.EmployeeTrackerAPI.models.User;
 import com.employeetracker.EmployeeTrackerAPI.security.JwtTokenProvider;
 import com.employeetracker.EmployeeTrackerAPI.service.iface.EmailService;
@@ -32,7 +33,7 @@ import java.util.Random;
 
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:5109")
+@CrossOrigin(origins = "*")
 @Api(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
@@ -70,13 +71,15 @@ public class UserController {
         return new ApiResponse(200, "SUCCESS", userService.getOne(id));
     }
 
-    @PostMapping(value = "/signUp/{role-id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Sign up a user to the AEMAPS platform with role-id as path variable", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse signUpUser(@RequestBody AddUserDto addUserDto, @PathVariable("role-id") Integer roleId, HttpServletRequest request){
+    @PostMapping(value = "/signUp", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Sign up a user to the AEMAPS platform.", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiResponse signUpUser(@RequestBody AddUserDto addUserDto,HttpServletRequest request){
         User user = modelMapper.map(addUserDto, User.class);
 
+        Role role = roleService.getOne(addUserDto.getRoleId());
+
         // Assign the role of the user
-        user.setRoles(Collections.singleton(roleService.getOne(roleId)));
+        user.setRole(Collections.singleton(role));
 
         // Generate the password
         String password = generatePassword(user.getName());
@@ -93,7 +96,7 @@ public class UserController {
         SimpleMailMessage registrationEmail = new SimpleMailMessage();
         registrationEmail.setTo(user.getEmailAddress());
         registrationEmail.setSubject("AEMAPS Platform");
-        registrationEmail.setText(" Dear " + user.getName() + ", \n You have been registered as a  " + roleService.getOne(roleId).getName()
+        registrationEmail.setText(" Dear " + user.getName() + ", \n You have been registered as a  " + role.getName().toString()
                 + " of the AEMAPS Platform.\n Email: " + user.getEmailAddress() +"\n Employee Code: "+user.getEmployeeCode() +"\n Password: " + password +
                 " \n Please keep your temporary password safe and reset it as soon as possible.");
         registrationEmail.setFrom("mchikuruwo@hotmail.com");
@@ -203,6 +206,6 @@ public class UserController {
 
         emailService.sendEmail(generatedCredentialsEmail);
 
-        return new ApiResponse(200,  "SUCCESS", userService.add(user));
+        return new ApiResponse(200,  "SUCCESS", userService.reset(user));
     }
 }
