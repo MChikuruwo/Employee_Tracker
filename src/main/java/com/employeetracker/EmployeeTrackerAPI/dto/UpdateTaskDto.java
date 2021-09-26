@@ -16,5 +16,8 @@ public class UpdateTaskDto {
     private Date actualEndDate;
     private String reasonSOfMissingDueDate;
     private TaskStatus taskStatus;
+    private Long dutyId;
+    private Integer employeeId;
+    private Long taskImportanceId;
 
 }

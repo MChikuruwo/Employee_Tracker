@@ -10,4 +10,6 @@ public class AddDelegationOfDutyDto {
     private Date fromDate;
     private Date toDate;
     private String reason;
+    private Integer managerId;
+    private Integer subordinateId;
 }

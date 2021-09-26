@@ -71,29 +71,26 @@ public class TaskController {
         return new ApiResponse(200, "SUCCESS", taskService.delete(id));
     }
 
-    @PostMapping("/create/{duty-id}/{employee-id}/{task-importance-id}")
+    @PostMapping("/create/{duty-id}")
     @ApiOperation(value = "Create a task assignment record. " + "Takes dutyId, employeeId & taskImportanceId as path variables", response = ApiResponse.class)
-    public ApiResponse createTask(@RequestBody AddTaskDto taskDto,
-                                              @PathVariable("duty-id") Long dutyId,
-                                              @PathVariable("employee-id") Integer employeeId,
-                                              @PathVariable("task-importance-id") Long taskImportanceId){
+    public ApiResponse createTask(@RequestBody AddTaskDto taskDto){
 
         Task task = modelMapper.map(taskDto, Task.class);
-        task.setDelegatedDuty(delegationOfDutyService.getOne(dutyId));
-        task.setAssignedTo(singleton(employeeService.getOne(employeeId)));
-        task.setImportance(taskImportanceService.getOne(taskImportanceId));
+        task.setDelegatedDuty(delegationOfDutyService.getOne(taskDto.getDutyId()));
+        task.setAssignedTo(singleton(employeeService.getOne(taskDto.getEmployeeId())));
+        task.setImportance(taskImportanceService.getOne(taskDto.getTaskImportanceId()));
         //get start and finish dates from the duty duration dates
-       task.setStartDate(delegationOfDutyService.getOne(dutyId).getFromDate());
-        task.setDueDate(delegationOfDutyService.getOne(dutyId).getToDate());
+       task.setStartDate(delegationOfDutyService.getOne(taskDto.getDutyId()).getFromDate());
+        task.setDueDate(delegationOfDutyService.getOne(taskDto.getDutyId()).getToDate());
 
 
         //send delegation of duty email from manager to subordinate on confirmation, could even be over sms
         SimpleMailMessage taskProcessingEmail = new SimpleMailMessage();
-        taskProcessingEmail.setTo(delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getEmailAddress());
+        taskProcessingEmail.setTo(delegationOfDutyService.getOne(taskDto.getDutyId()).getEmployeeByAssignedBy().getEmailAddress());
         taskProcessingEmail.setSubject("Task Creation Alert");
-        taskProcessingEmail.setText(" Dear " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase()+ " " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getSurname().toUpperCase() + ",\n Task: " + task.getName() +" to duty: " + delegationOfDutyService.getOne(dutyId).getDuty()
-                + " assigned to  " + employeeService.getOne(employeeId).getName()+" " + employeeService.getOne(employeeId).getSurname()  +" has been successfully created, with description: "+ task.getDescription()+ "\n Duration from start date: "+task.getActualStartDate()+","+" to finish date: "+ task.getActualEndDate()+"."+
-                "\nKindly look into it and track progress if there are any questions or gray areas kindly contact "+ delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase() +" at: " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getEmailAddress().toString()+"\n Regards");
+        taskProcessingEmail.setText(" Dear " + delegationOfDutyService.getOne(taskDto.getDutyId()).getEmployeeByAssignedBy().getName().toUpperCase()+ " " + delegationOfDutyService.getOne(taskDto.getDutyId()).getEmployeeByAssignedBy().getSurname().toUpperCase() + ",\n Task: " + task.getName() +" to duty: " + delegationOfDutyService.getOne(taskDto.getDutyId()).getDuty()
+                + " assigned to  " + employeeService.getOne(taskDto.getEmployeeId()).getName()+" " + employeeService.getOne(taskDto.getEmployeeId()).getSurname()  +" has been successfully created, with description: "+ task.getDescription()+ "\n Duration from start date: "+task.getActualStartDate()+","+" to finish date: "+ task.getActualEndDate()+"."+
+                "\nKindly look into it and track progress if there are any questions or gray areas kindly contact "+ delegationOfDutyService.getOne(taskDto.getDutyId()).getEmployeeByAssignTo().getName().toUpperCase() +" at: " + delegationOfDutyService.getOne(taskDto.getDutyId()).getEmployeeByAssignTo().getEmailAddress().toString()+"\n Regards");
         taskProcessingEmail.setFrom("mchikuruwo@hotmail.com");
 
         emailService.sendEmail(taskProcessingEmail);
@@ -104,20 +101,16 @@ public class TaskController {
         return new ApiResponse(201, "SUCCESS", taskService.add(task));
     }
 
-    @PutMapping("/edit/{task-id}{duty-id}/{employee-id}/{task-importance-id}")
+    @PutMapping("/edit/{task-id}")
     @ApiOperation(value = "Edit an existing assigned task record. " +  "Takes taskId, dutyId, employeeId & taskImportanceId as path variables",  response = ApiResponse.class)
     public ApiResponse updateTask(@RequestBody UpdateTaskDto taskDto,
-                                  @PathVariable("task-id") Long taskId,
-                                  @PathVariable("duty-id") Long dutyId,
-                                  @PathVariable("employee-id") Integer employeeId,
-                                  @PathVariable("task-importance-id") Long taskImportanceId){
+                                  @PathVariable("task-id") Long taskId){
 
         Task task = modelMapper.map(taskDto, Task.class);
         taskService.getOne(taskId);
-        task.setDelegatedDuty(delegationOfDutyService.getOne(dutyId));
-        task.setAssignedTo(singleton(employeeService.getOne(employeeId)));
-        task.setImportance(taskImportanceService.getOne(taskImportanceId));
-
+        task.setDelegatedDuty(delegationOfDutyService.getOne(taskDto.getDutyId()));
+        task.setAssignedTo(singleton(employeeService.getOne(taskDto.getEmployeeId())));
+        task.setImportance(taskImportanceService.getOne(taskDto.getTaskImportanceId()));
         // Get details from old record
         Task oldRecord = taskService.getOne(task.getId());
 
@@ -127,13 +120,12 @@ public class TaskController {
 
         //send delegation of duty email from manager to subordinate on confirmation, could even be over sms
         SimpleMailMessage taskProcessingUpdateEmail = new SimpleMailMessage();
-        taskProcessingUpdateEmail.setTo(delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getEmailAddress());
+        taskProcessingUpdateEmail.setTo(delegationOfDutyService.getOne(taskDto.getDutyId()).getEmployeeByAssignedBy().getEmailAddress());
         taskProcessingUpdateEmail.setSubject("Task Update Alert");
-        taskProcessingUpdateEmail.setText(" Dear " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase()+ " " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getSurname().toUpperCase() + ",\n Task: " + task.getName() +" to duty: " + delegationOfDutyService.getOne(dutyId).getDuty()
-                + " assigned to  " + employeeService.getOne(employeeId).getName()+" " + employeeService.getOne(employeeId).getSurname()  +" has been successfully updated, with description: "+ task.getDescription()+ "\n Duration from start date: "+task.getActualStartDate()+","+" to finish date: "+ task.getActualEndDate()+"."+
-                "\nKindly look into it and track progress if there are any questions or gray areas kindly contact "+ delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase() +" at: " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getEmailAddress().toString()+"\n Regards");
+        taskProcessingUpdateEmail.setText(" Dear " + delegationOfDutyService.getOne(taskDto.getDutyId()).getEmployeeByAssignedBy().getName().toUpperCase()+ " " + delegationOfDutyService.getOne(taskDto.getDutyId()).getEmployeeByAssignedBy().getSurname().toUpperCase() + ",\n Task: " + task.getName() +" to duty: " + delegationOfDutyService.getOne(taskDto.getDutyId()).getDuty()
+                + " assigned to  " + employeeService.getOne(taskDto.getEmployeeId()).getName()+" " + employeeService.getOne(taskDto.getEmployeeId()).getSurname()  +" has been successfully created, with description: "+ task.getDescription()+ "\n Duration from start date: "+task.getActualStartDate()+","+" to finish date: "+ task.getActualEndDate()+"."+
+                "\nKindly look into it and track progress if there are any questions or gray areas kindly contact "+ delegationOfDutyService.getOne(taskDto.getDutyId()).getEmployeeByAssignTo().getName().toUpperCase() +" at: " + delegationOfDutyService.getOne(taskDto.getDutyId()).getEmployeeByAssignTo().getEmailAddress().toString()+"\n Regards");
         taskProcessingUpdateEmail.setFrom("mchikuruwo@hotmail.com");
-
         return new ApiResponse(200, "SUCCESS", taskService.update(task));
     }
 }

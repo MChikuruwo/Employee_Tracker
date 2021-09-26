@@ -13,4 +13,8 @@ public class AddTaskDto {
     private Date actualStartDate;
     private Date actualEndDate;
     private String reasonSOfMissingDueDate;
+    private Long dutyId;
+    private Integer employeeId;
+    private Long taskImportanceId;
+
 }

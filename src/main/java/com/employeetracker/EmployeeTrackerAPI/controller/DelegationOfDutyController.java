@@ -72,22 +72,20 @@ public class DelegationOfDutyController {
         return new ApiResponse(200, "SUCCESS", delegationOfDutyService.delete(id));
     }
 
-    @PostMapping("/create/{manager-id}/{subordinate-id}")
-    @ApiOperation(value = "Create a new delegation of duty record. " + "Takes managerId and subordinateId as path variables", response = ApiResponse.class)
-    public ApiResponse createDelegationOfDuty(@RequestBody AddDelegationOfDutyDto delegationOfDutyDto,
-                                           @PathVariable("manager-id") Integer managerId,
-                                           @PathVariable("subordinate-id") Integer employeeId){
+    @PostMapping("/create")
+    @ApiOperation(value = "Create a new delegation of duty record. " , response = ApiResponse.class)
+    public ApiResponse createDelegationOfDuty(@RequestBody AddDelegationOfDutyDto delegationOfDutyDto){
 
         DelegationOfDuty delegationOfDuty = modelMapper.map(delegationOfDutyDto, DelegationOfDuty.class);
-        delegationOfDuty.setEmployeeByAssignedBy(employeeService.getOne(managerId));
-       delegationOfDuty.setEmployeeByAssignTo(employeeService.getOne(employeeId));
+        delegationOfDuty.setEmployeeByAssignedBy(employeeService.getOne(delegationOfDutyDto.getManagerId()));
+       delegationOfDuty.setEmployeeByAssignTo(employeeService.getOne(delegationOfDutyDto.getManagerId()));
 
        //send delegation of duty email from manager to subordinate on confirmation, could even be over sms
         SimpleMailMessage delegationOfDutyEmail = new SimpleMailMessage();
         delegationOfDutyEmail.setTo(delegationOfDuty.getEmployeeByAssignTo().getEmailAddress());
         delegationOfDutyEmail.setSubject("Assigned Duty Alert");
         delegationOfDutyEmail.setText(" Dear " + delegationOfDuty.getEmployeeByAssignTo().getName().toUpperCase() +" " +delegationOfDuty.getEmployeeByAssignTo().getSurname().toUpperCase()  + ", \n You have been assigned to duty: " +delegationOfDuty.getDuty()
-                + "\n Description is as follows: " + delegationOfDuty.getReason() +"\n Duration is from date: " + delegationOfDuty.getFromDate() + " ,To date :"+delegationOfDuty.getToDate()+"\n Please proceed to look into it and if there are any questions or gray areas kindly escalate to the relevant parties.\n Regards\n" + delegationOfDuty.getEmployeeByAssignedBy().getName().toUpperCase() +" "+delegationOfDuty.getEmployeeByAssignTo().getSurname().toUpperCase());
+                + "\n Description is as follows: " + delegationOfDuty.getReason() +"\n Duration is from date: " + delegationOfDuty.getFromDate() + " ,To date :"+delegationOfDuty.getToDate()+"\n Please proceed to look into it and if there are any questions or gray areas kindly escalate to the relevant parties.\n Regards\n" + delegationOfDuty.getEmployeeByAssignedBy().getName().toUpperCase() +" "+delegationOfDuty.getEmployeeByAssignedBy().getSurname().toUpperCase());
         delegationOfDutyEmail.setFrom("mchikuruwo@hotmail.com");
 
         emailService.sendEmail(delegationOfDutyEmail);
@@ -95,17 +93,15 @@ public class DelegationOfDutyController {
         return new ApiResponse(201, "SUCCESS", delegationOfDutyService.add(delegationOfDuty));
     }
 
-    @PutMapping("/edit/{duty-id}/{assigning-manager-id}/{assigned-employee-id}")
+    @PutMapping("/edit/{id}")
     @ApiOperation(value = "Edit an existing delegation of duty  record. " +  "Takes dutyID,assigningManagerId and employeeId as path variables",  response = ApiResponse.class)
     public ApiResponse updateDelegationOfDuty(@RequestBody UpdateDelegationOfDutyDto delegationOfDutyDto,
-                                              @PathVariable("duty-id") Long dutyId,
-                                              @PathVariable("assigning-manager-id") Integer managerId,
-                                           @PathVariable("assigned-employee-id") Integer employeeId){
+                                              @PathVariable ("id") Long dutyId){
 
         DelegationOfDuty delegationOfDuty = modelMapper.map(delegationOfDutyDto, DelegationOfDuty.class);
-        //delegationOfDuty.setId(delegationOfDutyService.getOne(dutyId));
-        delegationOfDuty.setEmployeeByAssignedBy(employeeService.getOne(managerId));
-        delegationOfDuty.setEmployeeByAssignTo(employeeService.getOne(employeeId));
+       // delegationOfDuty.setId(delegationOfDutyService.getOne(dutyId));
+        delegationOfDuty.setEmployeeByAssignedBy(employeeService.getOne(delegationOfDutyDto.getManagerId()));
+        delegationOfDuty.setEmployeeByAssignTo(employeeService.getOne(delegationOfDutyDto.getSubordinateId()));
 
         // Get details from old record
         DelegationOfDuty oldRecord = delegationOfDutyService.getOne(dutyId);
@@ -119,7 +115,7 @@ public class DelegationOfDutyController {
         updateDelegationOfDutyEmail.setSubject("Assigned Duty Update Alert");
         updateDelegationOfDutyEmail.setText(" Dear " + delegationOfDuty.getEmployeeByAssignTo().getName().toUpperCase() +" " +delegationOfDuty.getEmployeeByAssignTo().getSurname().toUpperCase()  + ", \n You have been assigned to duty: " +delegationOfDuty.getDuty()
                 + "\n Description is as follows: " + delegationOfDuty.getReason() +"\n Duration is from date: " + delegationOfDuty.getFromDate() + " ,To date :"+delegationOfDuty.getToDate()+"\n Please proceed to look into it and if there are any questions or gray areas kindly escalate to the relevant parties.\n Regards\n" + delegationOfDuty.getEmployeeByAssignedBy().getName().toUpperCase() +" "+delegationOfDuty.getEmployeeByAssignTo().getSurname().toUpperCase());
-        updateDelegationOfDutyEmail.setFrom("nust.innovationhub@hotmail.com");
+        updateDelegationOfDutyEmail.setFrom("mchikuruwo@hotmail.com");
 
         emailService.sendEmail(updateDelegationOfDutyEmail);
 

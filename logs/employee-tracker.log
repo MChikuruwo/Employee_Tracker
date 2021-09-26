@@ -234,3 +234,64 @@ Caused by: java.lang.RuntimeException: Driver com.mysql.cj.jdbc.Driver claims to
 2021-09-26 12:08:11.892  INFO 8168 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
 2021-09-26 12:08:11.898  INFO 8168 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2021-09-26 12:08:11.915  INFO 8168 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2021-09-26 17:50:54.525  INFO 11708 --- [restartedMain] c.e.E.EmployeeTrackerApiApplication      : Starting EmployeeTrackerApiApplication on MChikuruwo-PC with PID 11708 (C:\Users\Munyaradzi\IdeaProjects\EmployeeTrackerAPI\target\classes started by Munyaradzi in C:\Users\Munyaradzi\IdeaProjects\EmployeeTrackerAPI)
+2021-09-26 17:50:54.645  INFO 11708 --- [restartedMain] c.e.E.EmployeeTrackerApiApplication      : No active profile set, falling back to default profiles: default
+2021-09-26 17:50:55.206  INFO 11708 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2021-09-26 17:50:55.206  INFO 11708 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2021-09-26 17:51:22.830  INFO 11708 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFERRED mode.
+2021-09-26 17:51:26.407  INFO 11708 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 3089ms. Found 28 JPA repository interfaces.
+2021-09-26 17:51:30.826  INFO 11708 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@1cc26f0' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-09-26 17:51:30.954  INFO 11708 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2021-09-26 17:51:36.671  INFO 11708 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8091 (http)
+2021-09-26 17:51:36.744  INFO 11708 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-09-26 17:51:36.745  INFO 11708 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.37]
+2021-09-26 17:51:37.279  INFO 11708 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-09-26 17:51:37.280  INFO 11708 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 42073 ms
+2021-09-26 17:51:38.798  WARN 11708 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-09-26 17:51:39.432  INFO 11708 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2021-09-26 17:51:44.080  INFO 11708 --- [task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-09-26 17:51:45.400  INFO 11708 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 14 endpoint(s) beneath base path '/actuator'
+2021-09-26 17:51:46.823  INFO 11708 --- [restartedMain] pertySourcedRequestMappingHandlerMapping : Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-09-26 17:51:48.552  INFO 11708 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/assets/**'], []
+2021-09-26 17:51:48.553  INFO 11708 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/webjars/**'], []
+2021-09-26 17:51:48.553  INFO 11708 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/'], []
+2021-09-26 17:51:48.553  INFO 11708 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: Ant [pattern='/**', OPTIONS], []
+2021-09-26 17:51:49.609  INFO 11708 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1d22ac0, org.springframework.security.web.context.SecurityContextPersistenceFilter@7ba33a, org.springframework.security.web.header.HeaderWriterFilter@e9fabe, org.springframework.web.filter.CorsFilter@c9bed5, org.springframework.security.web.authentication.logout.LogoutFilter@174ce18, com.employeetracker.EmployeeTrackerAPI.handler.ExceptionHandlerFilter@193bf69, com.employeetracker.EmployeeTrackerAPI.security.JWTAuthenticationFilter@1a56d73, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1897a8e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@18a7c88, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1fd14aa, org.springframework.security.web.session.SessionManagementFilter@1696dd2, org.springframework.security.web.access.ExceptionTranslationFilter@18ea850, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@128db54]
+2021-09-26 17:51:50.488  INFO 11708 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2021-09-26 17:51:51.098  INFO 11708 --- [task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-09-26 17:52:51.975  INFO 11708 --- [task-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-09-26 17:53:57.093  INFO 11708 --- [restartedMain] c.g.a.oauth2.ComputeEngineCredentials    : Failed to detect whether we are running on Google Compute Engine.
+2021-09-26 17:53:57.094  WARN 11708 --- [restartedMain] o.s.c.g.core.DefaultCredentialsProvider  : No core credentials are set. Service-specific credentials (e.g., spring.cloud.gcp.pubsub.credentials.*) should be used if your app uses services that require credentials.
+2021-09-26 17:53:58.194  INFO 11708 --- [restartedMain] o.s.c.g.a.c.GcpContextAutoConfiguration  : The default project ID is null
+2021-09-26 17:53:59.282  INFO 11708 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8091 (http) with context path ''
+2021-09-26 17:54:01.463  INFO 11708 --- [restartedMain] d.s.w.p.DocumentationPluginsBootstrapper : Context refreshed
+2021-09-26 17:54:05.564  INFO 11708 --- [restartedMain] d.s.w.p.DocumentationPluginsBootstrapper : Found 1 custom documentation plugin(s)
+2021-09-26 17:54:10.187  INFO 11708 --- [restartedMain] s.d.s.w.s.ApiListingReferenceScanner     : Scanning for api listing references
+2021-09-26 17:54:17.324  INFO 11708 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: addCategoryUsingPOST_1
+2021-09-26 17:54:17.453  INFO 11708 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: addBusinessUnitUsingPOST_1
+2021-09-26 17:54:17.472  INFO 11708 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: updateBusinessUnitUsingPUT_1
+2021-09-26 17:54:18.123  INFO 11708 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: createTaskUsingPOST_1
+2021-09-26 17:54:18.125  INFO 11708 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: deleteTaskUsingDELETE_1
+2021-09-26 17:54:18.129  INFO 11708 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: getTaskByEmployeeUsingGET_1
+2021-09-26 17:54:18.144  INFO 11708 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: updateTaskUsingPUT_1
+2021-09-26 17:54:18.152  INFO 11708 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: getAllUsersUsingGET_1
+2021-09-26 17:54:18.154  INFO 11708 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: getOneUserUsingGET_1
+2021-09-26 17:54:18.570  INFO 11708 --- [restartedMain] .d.s.w.r.o.CachingOperationNameGenerator : Generating unique operation named: updateUserUsingPUT_1
+2021-09-26 17:54:18.964  INFO 11708 --- [restartedMain] DeferredRepositoryInitializationListener : Triggering deferred initialization of Spring Data repositories…
+2021-09-26 17:54:57.631  INFO 11708 --- [restartedMain] DeferredRepositoryInitializationListener : Spring Data repositories initialized!
+2021-09-26 17:54:59.923  INFO 11708 --- [restartedMain] c.e.E.EmployeeTrackerApiApplication      : Started EmployeeTrackerApiApplication in 252.578 seconds (JVM running for 285.972)
+2021-09-26 18:02:48.306  INFO 11708 --- [http-nio-8091-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-09-26 18:02:48.307  INFO 11708 --- [http-nio-8091-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-09-26 18:02:48.353  INFO 11708 --- [http-nio-8091-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 45 ms
+2021-09-26 18:05:15.014  WARN 11708 --- [http-nio-8091-exec-5] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; nested exception is java.lang.NumberFormatException: For input string: "add"]
+2021-09-26 18:06:18.803 ERROR 11708 --- [http-nio-8091-exec-7] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry '0774778774' for key 'mobile_number'
+2021-09-26 18:06:19.016  WARN 11708 --- [http-nio-8091-exec-7] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; constraint [mobile_number]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement]
+2021-09-26 18:06:59.150 ERROR 11708 --- [http-nio-8091-exec-8] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry '3' for key 'employee_id'
+2021-09-26 18:07:00.027  WARN 11708 --- [http-nio-8091-exec-8] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; constraint [employee_id]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement]
+2021-09-26 18:11:00.174  WARN 11708 --- [http-nio-8091-exec-1] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [com.employeetracker.EmployeeTrackerAPI.exceptions.UserNotFoundException: User with the ID 3 does not exist]
+2021-09-26 18:13:05.045  WARN 11708 --- [http-nio-8091-exec-7] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [javax.persistence.EntityNotFoundException: Employee with user id 1 not found]
+2021-09-26 18:13:38.779  WARN 11708 --- [http-nio-8091-exec-9] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [javax.persistence.EntityNotFoundException: Employee with the ID 5 does not exist]
+2021-09-26 18:17:21.852  WARN 11708 --- [http-nio-8091-exec-1] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [javax.persistence.EntityNotFoundException: Employee with the ID 5 does not exist]
+2021-09-26 18:17:34.707  WARN 11708 --- [http-nio-8091-exec-2] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [javax.persistence.EntityNotFoundException: Employee with the ID 5 does not exist]
+2021-09-26 18:17:58.618  WARN 11708 --- [http-nio-8091-exec-3] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [javax.persistence.EntityNotFoundException: Employee with user id 1 not found]
+2021-09-26 18:19:00.016  WARN 11708 --- [http-nio-8091-exec-4] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [javax.persistence.EntityNotFoundException: Employee with user id 1 not found]
