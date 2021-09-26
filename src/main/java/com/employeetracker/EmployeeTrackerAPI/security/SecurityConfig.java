@@ -63,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/v1/users/login/**","/api/v1/users/signUp/**","/api/v1/users/generate-credentials","/api/v1/users/edit/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/v1/users/all","/api/v1/users/**", "/api/v1/employees/**",
                         "/api/v1/business-units/**","/api/v1/duties/**","/api/v1/departments/**",
-                        "/api/v1/next-of-kin/**","/api/v1/notices/**", "/api/v1/spouse-details/**","/api/v1/tasks/**","/api/v1/requests/**").permitAll()
+                        "/api/v1/next-of-kin/**","/api/v1/notices/**", "/api/v1/spouse-details/**","/api/v1/tasks/**","/api/v1/requests/**","/api/v1/job-titles/**").permitAll()
                 .antMatchers("/", "/eureka/**").permitAll()
                 .antMatchers( "/api/v1/admin/users/").access("hasRole('ADMIN')")
                 .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**").permitAll()
