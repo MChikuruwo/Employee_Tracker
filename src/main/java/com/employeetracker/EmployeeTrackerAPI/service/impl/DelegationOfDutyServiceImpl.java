@@ -28,7 +28,7 @@ public class DelegationOfDutyServiceImpl  implements DelegationOfDutyService {
 
     @Override
     public String add(DelegationOfDuty delegationOfDuty) {
-        Employee findEmployee = employeeService.findByUserId(delegationOfDuty.getEmployeeByAssignedBy().getId());
+        Employee findEmployee = employeeService.getOne(delegationOfDuty.getEmployeeByAssignedBy().getId());
         if(findEmployee==null){
             throw new UnknownManagerException("No such Manager Found!");
         }else
