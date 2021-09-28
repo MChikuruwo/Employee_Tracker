@@ -34,7 +34,7 @@ public class TaskRequestsServiceImpl implements TaskRequestsService {
 
     @Override
     public String add(TaskRequests taskRequests) {
-        DelegationOfDuty duty = (DelegationOfDuty) taskRequests.getDuty();
+        DelegationOfDuty duty = (DelegationOfDuty) taskRequests.getDelegatedDuty();
         Employee subordinate = (Employee) taskRequests.getSubordinate();
 
         if (duty == null) {
@@ -69,7 +69,7 @@ public class TaskRequestsServiceImpl implements TaskRequestsService {
         if (!detailsFromDatabase.isPresent()) throw new EntityNotFoundException("Task request does not exist");
         // Carry date created timestamp
         taskRequests.setDateUpdated(detailsFromDatabase.get().getDateUpdated());
-        DelegationOfDuty findDuty = (DelegationOfDuty) taskRequests.getDuty();
+        DelegationOfDuty findDuty = (DelegationOfDuty) taskRequests.getDelegatedDuty();
         if (findDuty == null) {
             throw new UnknownDutyException("No such duty found.");
         } else {
