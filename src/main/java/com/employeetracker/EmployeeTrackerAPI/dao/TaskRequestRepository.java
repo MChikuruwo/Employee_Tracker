@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface TaskRequestRepository  extends JpaRepository<TaskRequests,Long> {
     TaskRequests findByTaskName(String taskName);
-    List<TaskRequests> findAllByDuty(DelegationOfDuty delegatedDuty);
+    List<TaskRequests> findAllByDelegatedDuty(DelegationOfDuty delegatedDuty);
 }

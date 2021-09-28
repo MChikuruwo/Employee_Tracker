@@ -135,7 +135,7 @@ public class TaskRequestsServiceImpl implements TaskRequestsService {
 
     @Override
     public List<TaskRequests> findAllByDuty(DelegationOfDuty duty) {
-        List<TaskRequests> tasks = taskRequestRepository.findAllByDuty(duty);
+        List<TaskRequests> tasks = taskRequestRepository.findAllByDelegatedDuty(duty);
         if (tasks.isEmpty()) {
             throw new EntityNotFoundException("Task requests to duty: ".concat(duty.getDuty().concat("Assigned to:")
                     .concat(duty.getEmployeeByAssignTo().getName().concat(" ").concat(duty.getEmployeeByAssignTo().getSurname()).concat(" not found"))));
