@@ -29,7 +29,7 @@ public class TaskRequests {
     private Timestamp dateUpdated;
     private TaskImportance importance;
 
-    private DelegationOfDuty duty;
+    private DelegationOfDuty delegatedDuty;
     private  Set<Employee> subordinate;
 
     @Id
@@ -162,7 +162,7 @@ public class TaskRequests {
         this.importance = importance;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "task_request_duty", joinColumns = @JoinColumn(name = "task_request_id"), inverseJoinColumns = @JoinColumn(name = "delegation_of_duty_id"))
     public DelegationOfDuty getDelegatedDuty() {
         return delegatedDuty;
