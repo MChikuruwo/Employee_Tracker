@@ -11,7 +11,7 @@ public class TaskDelegationOfDuty {
     private DelegationOfDuty delegationOfDutyByDelegationOfDutyId;
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)    @Column(name = "id")
     public Long getId() {
         return id;
     }
