@@ -71,8 +71,8 @@ public class TaskController {
         return new ApiResponse(200, "SUCCESS", taskService.delete(id));
     }
 
-    @PostMapping("/create/{duty-id}")
-    @ApiOperation(value = "Create a task assignment record. " + "Takes dutyId, employeeId & taskImportanceId as path variables", response = ApiResponse.class)
+    @PostMapping("/create")
+    @ApiOperation(value = "Create a task assignment record. ", response = ApiResponse.class)
     public ApiResponse createTask(@RequestBody AddTaskDto taskDto){
 
         Task task = modelMapper.map(taskDto, Task.class);

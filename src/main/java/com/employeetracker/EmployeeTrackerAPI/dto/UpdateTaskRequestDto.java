@@ -19,4 +19,6 @@ public class UpdateTaskRequestDto {
     private TaskProgress taskProgress;
     private Date startDate;
     private Date endDate;
+    private Long dutyId;
+    private Integer employeeId;
 }

@@ -29,7 +29,7 @@ public class TaskRequests {
     private Timestamp dateUpdated;
     private TaskImportance importance;
 
-    private Set<DelegationOfDuty> duty;
+    private DelegationOfDuty duty;
     private  Set<Employee> subordinate;
 
     @Id
@@ -164,12 +164,12 @@ public class TaskRequests {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "task_request_duty", joinColumns = @JoinColumn(name = "task_request_id"), inverseJoinColumns = @JoinColumn(name = "delegation_of_duty_id"))
-    public Set<DelegationOfDuty> getDuty() {
-        return duty;
+    public DelegationOfDuty getDelegatedDuty() {
+        return delegatedDuty;
     }
 
-    public void setDuty(Set<DelegationOfDuty> duty) {
-        this.duty = duty;
+    public void setDelegatedDuty(DelegationOfDuty delegatedDuty) {
+        this.delegatedDuty = delegatedDuty;
     }
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

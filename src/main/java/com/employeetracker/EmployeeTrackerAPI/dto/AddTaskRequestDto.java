@@ -10,4 +10,6 @@ public class AddTaskRequestDto {
     private String description;
     private Date startDate;
     private Date endDate;
+	private Long dutyId;
+	private Integer employeeId;
 }

@@ -13,6 +13,7 @@ import com.employeetracker.EmployeeTrackerAPI.models.Task;
 import com.employeetracker.EmployeeTrackerAPI.models.TaskRequests;
 import com.employeetracker.EmployeeTrackerAPI.service.iface.DelegationOfDutyService;
 import com.employeetracker.EmployeeTrackerAPI.service.iface.EmailService;
+import com.employeetracker.EmployeeTrackerAPI.service.iface.EmployeeService;
 import com.employeetracker.EmployeeTrackerAPI.service.iface.TaskRequestsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,12 +35,14 @@ public class TaskRequestsController {
     private final TaskRequestsService taskRequestsService;
     private final DelegationOfDutyService delegationOfDutyService;
     private final EmailService emailService;
+    private final EmployeeService employeeService;
     private final ModelMapper modelMapper;
 
-    public TaskRequestsController(TaskRequestsService taskRequestsService, DelegationOfDutyService delegationOfDutyService, EmailService emailService, ModelMapper modelMapper) {
+    public TaskRequestsController(TaskRequestsService taskRequestsService, DelegationOfDutyService delegationOfDutyService, EmailService emailService,EmployeeService employeeService, ModelMapper modelMapper) {
         this.taskRequestsService = taskRequestsService;
         this.delegationOfDutyService = delegationOfDutyService;
         this.emailService = emailService;
+        this.employeeService = employeeService;
         this.modelMapper = modelMapper;
     }
 
@@ -68,24 +71,23 @@ public class TaskRequestsController {
         return new ApiResponse(200, "SUCCESS", taskRequestsService.delete(id));
     }
 
-    @PostMapping("/create/{duty-id}")
-    @ApiOperation(value = "Create a new task request record. " + "Takes dutyId as path variable", response = ApiResponse.class)
-    public ApiResponse createTask(@RequestBody AddTaskRequestDto taskRequest,
-                                  @PathVariable("duty-id") Long dutyId){
+    @PostMapping("/create")
+    @ApiOperation(value = "Create a new task request record." , response = ApiResponse.class)
+    public ApiResponse createTask(@RequestBody AddTaskRequestDto taskRequest){
 
         TaskRequests task = modelMapper.map(taskRequest, TaskRequests.class);
-        task.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
-        task.setSubordinate(Collections.singleton(delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo()));
+        task.setDelegatedDuty((delegationOfDutyService.getOne(taskRequest.getDutyId())));
+        task.setSubordinate(Collections.singleton(employeeService.getOne(taskRequest.getEmployeeId())));
 
 
 
         //send delegation of duty email from manager to subordinate on confirmation, could even be over sms
         SimpleMailMessage taskRequestEmail = new SimpleMailMessage();
-        taskRequestEmail.setTo(delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getEmailAddress());
+        taskRequestEmail.setTo((delegationOfDutyService.getOne(taskRequest.getDutyId())).getEmployeeByAssignedBy().getEmailAddress());
         taskRequestEmail.setSubject("Task Request Alert");
-        taskRequestEmail.setText(" Dear " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getName().toUpperCase()+ " " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignedBy().getSurname().toUpperCase() + ",\n Task Request: " + task.getTaskName() +" to duty: " + delegationOfDutyService.getOne(dutyId).getDuty()
-                + " assigned to  " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase() +" " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getSurname().toUpperCase()  +" is being requested, with description: "+ task.getDescription()+ "\n Duration from start date: "+task.getStartDate()+","+" to finish date: "+ task.getEndDate()+"."+
-                "\nKindly look into it and track progress if there are any questions or gray areas kindly contact "+ delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getName().toUpperCase() +" at: " + delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo().getEmailAddress().toString()+"\n Regards");
+        taskRequestEmail.setText(" Dear " + (delegationOfDutyService.getOne(taskRequest.getDutyId())).getEmployeeByAssignedBy().getName().toUpperCase()+ " " + (delegationOfDutyService.getOne(taskRequest.getDutyId())).getEmployeeByAssignedBy().getSurname().toUpperCase() + ",\n Task Request: " + task.getTaskName() +" to duty: " + (delegationOfDutyService.getOne(taskRequest.getDutyId())).getDuty()
+                + " assigned to  " + (delegationOfDutyService.getOne(taskRequest.getDutyId())).getEmployeeByAssignTo().getName().toUpperCase() +" " + (delegationOfDutyService.getOne(taskRequest.getDutyId())).getEmployeeByAssignTo().getSurname().toUpperCase()  +" is being requested, with description: "+ task.getDescription()+ "\n Duration from start date: "+task.getStartDate()+","+" to finish date: "+ task.getEndDate()+"."+
+                "\nKindly look into it and track progress if there are any questions or gray areas kindly contact "+ (delegationOfDutyService.getOne(taskRequest.getDutyId())).getEmployeeByAssignTo().getName().toUpperCase() +" at: " + (delegationOfDutyService.getOne(taskRequest.getDutyId())).getEmployeeByAssignTo().getEmailAddress().toString()+"\n Regards");
         taskRequestEmail.setFrom("mchikuruwo@hotmail.com");
 
         emailService.sendEmail(taskRequestEmail);
@@ -107,13 +109,13 @@ public class TaskRequestsController {
 
         TaskRequests task = modelMapper.map(taskDto, TaskRequests.class);
         taskRequestsService.getOne(taskId);
-        task.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+        task.setDelegatedDuty(delegationOfDutyService.getOne(taskDto.getDutyId()));
         task.setSubordinate(Collections.singleton(delegationOfDutyService.getOne(dutyId).getEmployeeByAssignTo()));
 
         // Get details from old record
         TaskRequests oldRecord = taskRequestsService.getOne(task.getId());
 
-        task.setDuty(oldRecord.getDuty());
+        task.setDelegatedDuty(oldRecord.getDelegatedDuty());
 
         //send delegation of duty email from manager to subordinate on confirmation, could even be over sms
         SimpleMailMessage taskRequestUpdateEmail = new SimpleMailMessage();
@@ -133,7 +135,7 @@ public class TaskRequestsController {
                                            @PathVariable("duty-id") Long dutyId){
 
         TaskRequests task = taskRequestsService.getOne(taskId);
-        task.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+        task.setDelegatedDuty((delegationOfDutyService.getOne(dutyId)));
 
         //send task request validation email, could even be over sms
         SimpleMailMessage taskValidationEmail = new SimpleMailMessage();
@@ -156,7 +158,7 @@ public class TaskRequestsController {
                                          @PathVariable("duty-id") Long dutyId){
 
         TaskRequests taskRequest = taskRequestsService.getOne(taskId);
-        taskRequest.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+        taskRequest.setDelegatedDuty(delegationOfDutyService.getOne(dutyId));
 
         //send task request rejection email, could even be over sms
         SimpleMailMessage taskRejectionEmail = new SimpleMailMessage();
@@ -180,7 +182,7 @@ public class TaskRequestsController {
                                          @PathVariable("duty-id") Long dutyId){
 
         TaskRequests taskRequest = taskRequestsService.getOne(taskId);
-        taskRequest.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+        taskRequest.setDelegatedDuty(delegationOfDutyService.getOne(dutyId));
 
         //send task request rejection email, could even be over sms
         SimpleMailMessage taskCompletionEmail = new SimpleMailMessage();
@@ -202,7 +204,7 @@ public class TaskRequestsController {
                                          @PathVariable("duty-id") Long dutyId){
 
         TaskRequests taskRequest = taskRequestsService.getOne(taskId);
-        taskRequest.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+        taskRequest.setDelegatedDuty(delegationOfDutyService.getOne(dutyId));
 
         //send task request rejection email, could even be over sms
         SimpleMailMessage taskCompletionVerificationEmail = new SimpleMailMessage();
@@ -223,7 +225,7 @@ public class TaskRequestsController {
                                          @PathVariable("duty-id") Long dutyId){
 
         TaskRequests taskRequest = taskRequestsService.getOne(taskId);
-        taskRequest.setDuty(Collections.singleton(delegationOfDutyService.getOne(dutyId)));
+        taskRequest.setDelegatedDuty(delegationOfDutyService.getOne(dutyId));
 
         //send task request rejection email, could even be over sms
         SimpleMailMessage taskRejectionEmail = new SimpleMailMessage();
